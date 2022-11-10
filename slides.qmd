@@ -36,8 +36,9 @@ $t =\frac{\bar{x}-\mu}{s_{\bar{x}}}$
 ## Degrees of Freedom & Rejection Regions
 
 ```{r}
-# echo: false
+#| echo: false
 library( tidyverse )
+ggplot2::theme_set( theme_minimal() )
 x <- seq(-5,5,by=0.02)
 d <- data.frame( t=c(x,x,x),
                   f=c(dt(x,df=1),
@@ -101,12 +102,13 @@ ggplot() +
 
 
 
-## The Iris Data (Again)
+## The Iris Data (Again) {.smaller}
 
 :::: {.columns}
 
 ::: {.column width="50%"}
 ```{r}
+#| echo: false
 library( knitr )
 iris %>%
   group_by( Species ) %>%
@@ -207,6 +209,7 @@ iris %>%
 
 ::: {.column width="50%"}
 ```{r}
+#| echo: false
 ggplot( iris, aes(x=Sepal.Length, fill=Species)) + geom_density(alpha=0.75)
 ```
 :::
