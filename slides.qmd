@@ -1,5 +1,5 @@
 ---
-title: "Analysis of Variance"
+title: "Analysis of Means"
 subtitle: "Testing Equality of Means"
 author: Rodney Dyer, PhD
 format: revealjs
@@ -12,10 +12,13 @@ execute:
 
 In general, many times we are interested in testing to see if some samples have a particular value.  Examples may include:
 
+::: {.incremental}
 - $H_O: \mu = c$  The mean of the data is equal to a specific value.  
-- $H_O: \mu_1 = \mu_2$  These two samples have the same mean.  
-- $H_O: \mu_1 = \mu_2 = \mu_3 ... \mu_k$: The mean of all $k$ values are all the same.
 
+- $H_O: \mu_1 = \mu_2$  These two samples have the same mean.  
+
+- $H_O: \mu_1 = \mu_2 = \mu_3 ... \mu_k$: The mean of all $k$ values are all the same.
+:::
 
 
 
@@ -310,23 +313,48 @@ These data are not `paired` so I will not provide an example.  The key here is t
 # Equality of Many Means {background-color="black" background-image="media/contour.png" background-size="initial" background-position="right"}
 
 
-## Why Not All-Pairs t-tests?
 
 
-:::{.fragment}
-$H_O: Not\;Pregnant$
+## Errors Around $H_O: Not\;Pregnant$ {.smaller}
 
-![](https://live.staticflickr.com/65535/50609390796_c9445f28fe_c_d.jpg)
-:::
 
 :::: {.columns}
 
-::: {.column width="50%"}
-Rejecting of a true null hypothesis `false positive`
+::: {.column width="45%"}
+![](media/TypeII_Error.png)
 :::
 
-::: {.column width="50%"}
-Non-rejection of a false null hypothesis, `false negative`
+::: {.column width="45%"}
+&nbsp;
+
+Non-rejection of a false null hypothesis:
+
+- `false negative`
+:::
+
+::::
+
+
+
+
+
+
+
+
+
+## Errors Around $H_O: Not\;Pregnant$ {.smaller}
+
+:::: {.columns}
+::: {.column width="45%"}
+&nbsp;
+
+Rejecting of a true null hypothesis:  
+
+- `false positive`
+:::
+
+::: {.column width="45%"}
+![](media/TypeI_Error.png) 
 :::
 
 ::::
@@ -356,7 +384,15 @@ $1 - (1-0.05)^3 \approx 0.1426$
 
 ## Multiple Testing Problem
 
-If we test all three pairs of tests for the *Iris* data, what mean that we are expecting, <font color="red">even if there are absolutely **no differences** between species</font>, to reject the $H_O$ at least 14% of the time!
+If we test all three pairs of tests for the *Iris* data, what mean that we are expecting, 
+
+&nbsp;
+
+<font color="red">even if there are absolutely **no differences** between species,</font> 
+
+&nbsp;
+
+we **expect** to reject the $H_O$ at least 14% of the time!
 
 
 :::{.fragment}
@@ -372,8 +408,7 @@ If we test all three pairs of tests for the *Iris* data, what mean that we are e
 #| echo: false
 ggplot( iris, aes(x=Species, y=Sepal.Length)) + 
   geom_boxplot(notch = TRUE, color="#cc8011") + 
-  stat_summary( color="#0F8B8D", size=1.3 ) +
-  geom_point( alpha=0.75) + 
+  stat_summary( color="#0F8B8D", size=1.2 ) +
   geom_jitter( width=0.25) +
   ylab("Sepal Length") 
 ```

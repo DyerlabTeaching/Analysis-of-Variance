@@ -17,7 +17,7 @@ Here is some new data to play with a bit to explore one-way and two-way analysis
 - Pre.weight & weight6weeks (kg)
 - Diet (1,2,3)
 
-The data are located as a CSV file named `DietData.csv` in the `data` subfolder of this repository.  Load the data in and format things so they look correctly to you.
+The data are located as a CSV file named `DietData.csv` linked from the Canvas page.  Load the data in and format things so they look correctly to you.
 
 ```{r}
 # load the data in here
