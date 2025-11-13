@@ -407,13 +407,45 @@ we **expect** to reject the $H_O$ at least 14% of the time!
 ```{r}
 #| echo: false
 ggplot( iris, aes(x=Species, y=Sepal.Length)) + 
-  geom_boxplot(notch = TRUE, color="#cc8011") + 
+  geom_jitter( width=0.25) +
+  ylab("Sepal Length") 
+```
+
+$y_{ij} = \mu + \tau_i + \epsilon_j$
+
+
+
+
+
+
+## A Linear Model Approach 
+
+```{r}
+#| echo: false
+ggplot( iris, aes(x=Species, y=Sepal.Length)) + 
   stat_summary( color="#0F8B8D", size=1.2 ) +
   geom_jitter( width=0.25) +
   ylab("Sepal Length") 
 ```
 
 $y_{ij} = \mu + \tau_i + \epsilon_j$
+
+
+
+## A Linear Model Approach 
+
+```{r}
+#| echo: false
+ggplot( iris, aes(x=Species, y=Sepal.Length)) + 
+  geom_boxplot(notch = TRUE, color="#cc8011") + 
+  geom_abline( aes(intercept=mean(iris$Sepal.Length),slope=0), col = "red", lty=2 ) +
+  stat_summary( color="#0F8B8D", size=1.2 ) +
+  geom_jitter( width=0.25) +
+  ylab("Sepal Length") 
+```
+
+$y_{ij} = \mu + \tau_i + \epsilon_j$
+
 
 
 ## A Linear Model Approach {.scrollable}
