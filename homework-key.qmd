@@ -28,6 +28,7 @@ read_csv( "data/DietData.csv") |>
   mutate( loss = pre.weight - weight6weeks ) |>
   select( loss, gender, diet = Diet )  -> df 
 ```
+
 ## Exploratory Data Anlsysis
 
 One of the first things to do is to look at the data and see if there are any obvious things.  Go ahead and explore these data visually.  What do you see?
@@ -38,10 +39,6 @@ One of the first things to do is to look at the data and see if there are any ob
 library( GGally )
 
 ggpairs( df )
-
-df |> 
-  ggplot( aes( Height, weight6weeks) ) + 
-  geom_point()
 ```
 
 

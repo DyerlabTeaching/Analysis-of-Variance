@@ -12,11 +12,11 @@ theme_set( theme_bw(base_size = 14) )
 ```
 
 > Here we explore methods applicable to testing hypotheses about specific parameters, as equal to a specified value (a $t$-test), equal between two samples (paired $t$-tests), and equal among more than two groups (analysis of variance).  
-In this and the next section, we will examine how to tell the difference between measures of central tendency.  This is applied to a single set of data, pairs of data sets, and a data set with many different groups. As we increase the complexity of these hypotheses, we will move through a series of statistical tests, starting with a one-sample $t$-test, a paired $t$-test, and then to the general analysis of variance (ANVOA) approaches.  All of these methods evaluate the equality of mean values.
+In this and the next section, we will examine how to tell the difference between measures of central tendency.  This is applied to a single set of data, pairs of data sets, and a data set with many different groups. As we increase the complexity of these hypotheses, we will move through a series of statistical tests, starting with a one-sample $t$-test, a paired $t$-test, and then to the general analysis of variance (ANOVA) approaches.  All of these methods evaluate the equality of mean values.
 
 ## One Sample Hypotheses
 
-At the most basic level, we can take a set of data and test to see if the mean of those values are equated to some particular value, $H_O: \mu = x$ (or $H_O: \mu = 0$ in some cases).  The idea here is to determine, by specifying a value for the null hypothesis, what we expect the mean value to be equal to.  Going back to our idea of hypothesis testing, the null hypothesis is the thing we are trying to disprove (with some level of statistical confidence) and in doing so we need to define a test statistic that we have an idea about its behavior.  In this case, we will define Student's $t$-test statistic as:
+At the most basic level, we can take a set of data and test to see if the mean of those values is equated to some particular value, $H_O: \mu = x$ (or $H_O: \mu = 0$ in some cases).  The idea here is to determine, by specifying a value for the null hypothesis, what we expect the mean value to be equal to.  Going back to our idea of hypothesis testing, the null hypothesis is the thing we are trying to disprove (with some level of statistical confidence) and in doing so we need to define <mark>a test statistic that we have an idea about its behavior</mark>.  In this case, we will define Student's $t$-test statistic as:
 
 $t =\frac{\bar{x}-\mu}{s_{\bar{x}}}$
 
@@ -33,7 +33,7 @@ d <- data.frame( t=c(x,x,x),
 ggplot( d, aes(x=t,y=f,color=df)) + geom_line() 
 ```
 
-When $df=\infty$ then $PDF(t) = Normal$.  As such, we do not need to make corrections to understand the area under the curve, we can just use the normal probability density function.  In fact, when $df=\infty$ then $t_{\alpha,\infty} = Z_{\alpha} = \sqrt{\chi^2_{\alpha,df=1}}$!  The take home message here is that all your statistics become much easier when $N=\infty$, so go collect some more data!
+When $df=\infty$ then $PDF(t) = Normal$.  As such, we do not need to make corrections to understand the area under the curve, we can just use the normal probability density function.  In fact, when $df=\infty$ then $t_{\alpha,\infty} = Z_{\alpha} = \sqrt{\chi^2_{\alpha,df=1}}$!  The take-home message here is that all your statistics become much easier when $N=\infty$, so go collect some more data!
 
 For $df < \infty$ (all the cases we will be dealing with), we will use the approximation defined by the $t$ distribution.  If you look at the distributions above, you see that as we increase the number of samples (e.g., as $df$ increases), the distribution becomes more restricted.  The actual function is defined (where $df = v$ for simplicity in nomenclature) as:
 
@@ -56,7 +56,7 @@ ggplot() +
   geom_text( aes(x,y,label=label),data=d3)
 ```
 
-In R, we can use the `t.test()` function.  I'm going to go back to the *Iris* data set and use that as it has three categories (the species) and many measurements on sepals and pedals.  Here I separate the species into their own `data.frame` objects.
+In R, we can use the `t.test()` function.  I'm going to go back to the *Iris* data set and use that as it has three categories (the species) and many measurements on sepals and petals.  Here I separate the species into their own `data.frame` objects.
 
 ```{r}
 df.se <- iris[ iris$Species == "setosa",] 
@@ -64,7 +64,7 @@ df.ve <- iris[ iris$Species == "versicolor",]
 df.vi <- iris[ iris$Species == "virginica",]
 ```
 
-Lets look at the `Sepal.Length` feature in these species and create some hypotheses about it.  
+Let's look at the `Sepal.Length` feature in these species and create some hypotheses about it.  
 
 ```{r}
 ggplot( iris, aes(x=Sepal.Length, fill=Species)) + geom_density(alpha=0.75)
@@ -102,7 +102,7 @@ or the mean plus or minus standard deviation of the data times the value of the 
 There are times when reporting some confidence around a parameter is important, particularly when using tabular data as output.
 
 ```{r}
-Species <- c("Iris setosa","Iris versicolor","Iris virginia")
+Species <- c("Iris setosa","Iris versicolor","Iris virginica")
 Sepal.Length <- c(mean(df.se$Sepal.Length), mean(df.ve$Sepal.Length), mean( df.vi$Sepal.Length))
 Sepal.Length.SE <- c(sd(df.se$Sepal.Length), sd(df.ve$Sepal.Length), sd( df.vi$Sepal.Length))
 Sepal.Length.SEM <- Sepal.Length.SE / sqrt(50)
@@ -139,9 +139,9 @@ Under this hypothesis, we can use a *t*-test like before but just rearranged as:
 
 $t = \frac{\bar{x}_1 - \bar{x}_2}{s_{\bar{x}_1-\bar{x}_2}}$
 
-As before, if the difference in the numerator is small we would reject but here we need to standardize the differences in the means by a measure of the standard deviation that is based upon both sets of data.  This is called a the *standard error of the difference in two means* (real catchy title, no?).  This is defined as:
+As before, if the difference in the numerator is small we would reject but here we need to standardize the differences in the means by a measure of the standard deviation that is based upon both sets of data.  This is called the *standard error of the difference in two means* (real catchy title, no?).  This is defined as:
 
-$s_{\bar{x}_1-\bar{x}_2} = \sqrt{ \frac{s_1^2}{N_1}+\frac{s_2^2}{N}}$
+<mark>$s_{\bar{x}_1-\bar{x}_2} = \sqrt{ \frac{s_1^2}{N_1}+\frac{s_2^2}{N}}$</mark>
 
 To test this, we use the same approach as before but instead of defining $\mu = 6.0$ in the `t.test()` function, we instead give it both data sets.
 
@@ -153,7 +153,7 @@ Here we get a few bits of new information from the analysis.  It is obvious that
 
 ## Many Sample Hypotheses
 
-If we have more than two samples, we could do a bunch of paired $t$-test statistics but this is not the best idea.  In fact, if we do this to our data, each time testing at a confidence level of, say,  $\alpha = 0.05$, then for each time we test at $0.05$ but over all pairs, we test at an overall level of $0.05^k$ (where $k$ is the number of tests) value.  We cannot do multiple tests without penalizing ourselves in terms of the level at which we consider something significant if we are going to do all these tests.  You may have heard about a Bonferroni correction---this does exactly that, it allows us to modify the $\alpha$ level we use to take into consideration the number of tests we are going to use.  While this may be an acceptable way to test for the equality of several means (and it may not actually be if you ask most statisticians), there is another way that is much easier.  
+If we have more than two samples, we could do a bunch of paired $t$-test statistics but this is not the best idea.  In fact, if we do this to our data, each time testing at a confidence level of, say,  $\alpha = 0.05$, then for each time we test at $0.05$ but over all pairs, we test at an overall level of $0.05^k$ (where $k$ is the number of tests).  We cannot do multiple tests without penalizing ourselves in terms of the level at which we consider something significant if we are going to do all these tests.  You may have heard about a Bonferroni correction---this does exactly that, it allows us to modify the $\alpha$ level we use to take into consideration the number of tests we are going to use.  While this may be an acceptable way to test for the equality of several means (and it may not actually be if you ask most statisticians), there is another way that is much easier.  
 
 Consider the case where we have many categories (e.g., factors in R) that we are interested in determining if the mean of all are equal.  The null hypothesis for this is, $H_O: \mu_1 = \mu_2 = \ldots = \mu_k$, where there are $k$ different treatment levels.  This is essentially what we'd want to do by doing a bunch of $t$-tests but we can use another approach that we don't have to penalize ourselves for multiple tests.  Here is how it works.
 
@@ -199,11 +199,11 @@ Among   | $K-1$ | $\sum_{i=1}^K N_i \left( \bar{x}_i - \bar{x} \right)^2$       
 Within  | $N-K$ | $\sum_{i=1}^Kn_i\left( \sum_{j=1}^{N_i}(x_{ij}-\bar{x}_i)^2 \right)$ | $\frac{SS_W}{N-K}$
 Total   | $N-1$ | $\sum_{i=1}^K \sum_{j=1}^{N_i} (x_{ij} - \bar{x})^2$               | 
 
-In R, we can evaluate the equality of means by partitioning our data as depicted above.  Essentially, if at least one of our treatments means deviate significantly, then the $MS_A$ will be abnormally large relative to the variation within each treatment $MS_W$.  This gives us a statistic, defined by the American statistician Snedekor as:
+In R, we can evaluate the equality of means by partitioning our data as depicted above.  Essentially, if at least one of our treatment means deviates significantly, then the $MS_A$ will be abnormally large relative to the variation within each treatment $MS_W$.  This gives us a statistic, defined by the American statistician Snedecor as:
 
 $F = \frac{MS_A}{MS_W}$
 
-as an homage to Ronald Fisher (the F-statistic) has a pretty well understood distribution under a few conditions.  This statistic has an expectation of:
+<mark>as an homage to Ronald Fisher (the F-statistic) has a pretty well understood distribution under a few conditions.</mark>  This statistic has an expectation of:
 
 $f(x | df_A, df_W) = \frac{\sqrt{\frac{(df_Ax)^{df_A}df_W^{df_W}}{(df_Ax + df_W)^{df_W+df_A}}}}{x\mathbf{B}\left( \frac{df_A}{2}, \frac{df_W}{2} \right)}$
 
@@ -222,11 +222,11 @@ The function called here, `aov()` is the one that does the Analysis of Variance.
 anova(fit.aov)
 ```
 
-which shows that the "Species" treatment are significantly different from each other, with an $F$ statistic equal to $F = 119.3$, which with 2 and 147 degrees of freedom is assigned a probability equal to $2e^{-16}$, a very small value!  
+which shows that the "Species" treatment groups are significantly different from each other, with an $F$ statistic equal to $F = 119.3$, which with 2 and 147 degrees of freedom is assigned a probability equal to $2e^{-16}$, a very small value!  
 
 ### Post-Hoc Tests
 
-What this analysis tells us is that *at least* one of the treatment means are different from the rest.  What it does not tell us is which one or which subset.  It could be that *I. setosa* is significantly smaller than both *I. versitosa* and *I. virginia*.  It could be that *I. virginia* is significantly larger than the others, who are not different.  It could also mean that they are all different.  To address this, we can estimate a *post hoc* test, to evaluate the difference between treatment means within this model itself.  
+What this analysis tells us is that *at least* one of the treatment means is different from the rest.  What it does not tell us is which one or which subset.  It could be that *I. setosa* is significantly smaller than both *I. versicolor* and *I. virginica*.  It could be that *I. virginica* is significantly larger than the others, which are not different.  It could also mean that they are all different.  To address this, we can estimate a *post hoc* test, to evaluate the difference between treatment means within this model itself.  
 
 One of the most common ways to evaluate the equality of treatment mean values is that defined by Tukey.  The so-called "Honest Significant Differences" *post hoc* test is given by
 
@@ -235,7 +235,7 @@ tuk <- TukeyHSD(fit.aov)
 tuk
 ```
 
-which breaks down the pair-wise differences in the mean of each treatment.  Here we see the magnitude of the differences in mean values, the lower and upper confidence on the differences, and the probability associated with these differences.  In this example, all three comparisons are highly unlikely (e.g., $P$ is very small and in this case essentially zero).  As a result, we can interpret these results as suggesting that each of the three species have significantly different.  If we plot these results, we see which ones are larger and which are smaller. 
+which breaks down the pair-wise differences in the mean of each treatment.  Here we see the magnitude of the differences in mean values, the lower and upper confidence on the differences, and the probability associated with these differences.  In this example, all three comparisons are highly unlikely (e.g., $P$ is very small and in this case essentially zero).  As a result, <mark>we can interpret these results as suggesting that each of the three species have significantly different.</mark>  If we plot these results, we see which ones are larger and which are smaller. 
 
 ```{r}
 plot( tuk )

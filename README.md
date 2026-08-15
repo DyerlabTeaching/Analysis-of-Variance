@@ -13,7 +13,7 @@ This topic focuses on analysis of means, as either equating the mean value of on
 ## Student Learning Objectives
 
 At the end of this topic, you should be able to:  
- - Understand rejection regions and describe how they change due to the alternative hypothsis.  
+ - Understand rejection regions and describe how they change due to the alternative hypothesis.  
  - Execute an analysis of mean values for a single or dual set of samples using the Student's t-test.
  - Perform an analysis of Variance to test the equality of two or more means based upon one or more predictor variables.
  - Apply the Tukey's test to determine which set of means are actually different in an analysis of variance.
