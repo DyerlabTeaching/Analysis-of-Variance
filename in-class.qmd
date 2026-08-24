@@ -1,5 +1,5 @@
 ---
-title: "Analysis of Variance"
+title: "In Class Activity - Analysis of Variance"
 author: "YOUR NAME HERE"
 execute:
   echo: true
