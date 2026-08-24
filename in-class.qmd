@@ -1,12 +1,9 @@
 ---
 title: "Analysis of Variance"
 author: "YOUR NAME HERE"
-execute: 
+execute:
   echo: true
-format: 
-  html:
-    code-tools: true
-    toc: false
+format: html
 ---
 
 ```{r}
