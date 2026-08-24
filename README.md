@@ -31,6 +31,14 @@ This topic focuses on analysis of means, as either equating the mean value of on
 - An [in-class](https://dyerlabteaching.github.io/Analysis-of-Variance/in-class.html) activity.
 - An online [lecture](https://youtu.be/Kfm7GAvqyG0) for this topic as Dyer was sick.
 
+## Assessment
+
+- A [homework](https://dyerlabteaching.github.io/Analysis-of-Variance/homework.html) assignment on the topic.
+
+## Logistics
+
+- A [Teaching Log](https://dyerlabteaching.github.io/Analysis-of-Variance/log.html) record of delivery and notes.
+
 ## Contact Information
 
 If you need to contact me, I am available at:
