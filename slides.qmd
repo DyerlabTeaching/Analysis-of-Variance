@@ -126,7 +126,7 @@ iris %>%
 :::
 
 ::: {.column width="50%"}
-![The enigmatic *Iris*.](https://live.staticflickr.com/65535/50609360207_92d21b056f_w_d.jpg)
+![The enigmatic *Iris*.](media/the_enigmatic_iris.jpg)
 :::
 
 ::::
