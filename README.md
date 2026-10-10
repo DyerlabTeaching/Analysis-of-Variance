@@ -1,6 +1,6 @@
 # Analysis of Mean Differences
 
-![Photo by <a href="https://unsplash.com/@tolga__?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Tolga Ulkan</a> on <a href="https://unsplash.com/s/photos/different-means?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>](https://github.com/DyerlabTeaching/Analysis-of-Variance/raw/main/media/tolga-ulkan-9k36QqhA0cU-unsplash.jpg)
+![Photo by <a href="https://unsplash.com/@tolga__?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Tolga Ulkan</a> on <a href="https://unsplash.com/s/photos/different-means?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>](https://dyerlabteaching.github.io/Analysis-of-Variance/media/tolga-ulkan-9k36QqhA0cU-unsplash.jpg)
 
 ## Impetus
 

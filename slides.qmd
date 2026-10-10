@@ -2,7 +2,7 @@
 title: "Analysis of Means"
 subtitle: "Testing Equality of Means"
 author: Rodney Dyer, PhD
-format: revealjs
+format: dyerlab-revealjs
 execute:
   echo: true
 ---

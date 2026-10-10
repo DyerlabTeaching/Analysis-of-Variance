@@ -3,7 +3,7 @@ title: "Analysis of Variance"
 author: "YOUR NAME HERE"
 execute:
   echo: true
-format: html
+format: dyerlab-html
 ---
 
 Here is some new data to play with a bit to explore one-way and two-way analysis of variance models.  These data represent weight data associated with three different diet types.  There are 76 observations of individuals with the following characteristics:
@@ -14,12 +14,12 @@ Here is some new data to play with a bit to explore one-way and two-way analysis
 - Pre.weight & weight6weeks (kg)
 - Diet (1,2,3)
 
-The data are located as a CSV file named `DietData.csv` linked from the Canvas page.  Load the data in and format things so they look correctly to you.
+The data are located in the [course data repository](https://dyerlabteaching.github.io/CourseData/Miscellaneous/DietData.csv) as a CSV file named `DietData.csv`.  Load the data in and format things so they look correctly to you.
 
 ```{r}
 # load the data in here
 library( tidyverse )
-read_csv( "data/DietData.csv") |> 
+read_csv( "https://dyerlabteaching.github.io/CourseData/Miscellaneous/DietData.csv") |> 
   mutate( gender = factor( gender ), 
           Diet = factor( Diet, ordered=TRUE )) |>
   mutate( loss = pre.weight - weight6weeks ) |>
