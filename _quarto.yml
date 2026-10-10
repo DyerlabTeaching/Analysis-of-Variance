@@ -6,6 +6,10 @@ project:
     - media/
     - data/
 
+execute:
+  warning: false
+  message: false
+
 format:
   dyerlab-narrative-html: default
   dyerlab-html: default
