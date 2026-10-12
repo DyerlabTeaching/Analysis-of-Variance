@@ -1,0 +1,12 @@
+title: "Analysis of Variance"
+repo: Analysis-of-Variance
+image:
+  file: media/module_image.jpg
+  alt: "A milkweed beetle on a plant."
+epigraph: >-
+  Here we explore methods applicable to testing hypotheses about
+  specific parameters, as equal to a specified value (a $t$-test), equal
+  between two samples (paired $t$-tests), and equal among more than two
+  groups (analysis of variance).
+resources:
+  - "An online [lecture](https://youtu.be/Kfm7GAvqyG0) for this topic as Dyer was sick."

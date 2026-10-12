@@ -1,6 +1,10 @@
-# Analysis of Mean Differences
+# Analysis of Variance
 
-![Photo by <a href="https://unsplash.com/@tolga__?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Tolga Ulkan</a> on <a href="https://unsplash.com/s/photos/different-means?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>](https://dyerlabteaching.github.io/Analysis-of-Variance/media/tolga-ulkan-9k36QqhA0cU-unsplash.jpg)
+<!-- BEGIN module:header — generated from module.yml; edit that, not this -->
+
+![A milkweed beetle on a plant.](https://dyerlabteaching.github.io/Analysis-of-Variance/media/module_image.jpg)
+
+<!-- END module:header -->
 
 ## Impetus
 
@@ -26,10 +30,14 @@ This topic focuses on analysis of means, as either equating the mean value of on
 
 ## Content
 
-- The [slides](https://dyerlabteaching.github.io/Analysis-of-Variance/slides.html) used in this lecture.
-- A longer [narrative](https://dyerlabteaching.github.io/Analysis-of-Variance/narrative.html) focusing on the topic.
+<!-- BEGIN module:resources — generated from module.yml; edit that, not this -->
+
+- The [slides](https://dyerlabteaching.github.io/Analysis-of-Variance/slides.html) for this topic.
+- A longer [narrative](https://dyerlabteaching.github.io/Analysis-of-Variance/narrative.html) that goes into more depth.
 - An [in-class](https://dyerlabteaching.github.io/Analysis-of-Variance/in-class.html) activity.
 - An online [lecture](https://youtu.be/Kfm7GAvqyG0) for this topic as Dyer was sick.
+
+<!-- END module:resources -->
 
 ## Assessment
 
