@@ -307,15 +307,15 @@ Rodney Dyer, PhD
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a>iris <span class="sc">%&gt;%</span></span>
-<span id="cb1-2"><a href=""></a>  <span class="fu">filter</span>( Species <span class="sc">==</span> <span class="st">"setosa"</span> ) <span class="sc">%&gt;%</span></span>
-<span id="cb1-3"><a href=""></a>  <span class="fu">select</span>( Sepal.Length ) <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a>iris <span class="sc">|&gt;</span></span>
+<span id="cb1-2"><a href=""></a>  <span class="fu">filter</span>( Species <span class="sc">==</span> <span class="st">"setosa"</span> ) <span class="sc">|&gt;</span></span>
+<span id="cb1-3"><a href=""></a>  <span class="fu">select</span>( Sepal.Length ) <span class="sc">|&gt;</span></span>
 <span id="cb1-4"><a href=""></a>  <span class="fu">t.test</span>( <span class="at">mu=</span><span class="fl">5.843</span> )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     One Sample t-test
 
-data:  .
+data:  select(filter(iris, Species == "setosa"), Sepal.Length)
 t = -16.791, df = 49, p-value &lt; 2.2e-16
 alternative hypothesis: true mean is not equal to 5.843
 95 percent confidence interval:
@@ -343,15 +343,15 @@ mean of x
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>iris <span class="sc">%&gt;%</span></span>
-<span id="cb3-2"><a href=""></a>  <span class="fu">filter</span>( Species <span class="sc">==</span> <span class="st">"versicolor"</span> ) <span class="sc">%&gt;%</span></span>
-<span id="cb3-3"><a href=""></a>  <span class="fu">select</span>( Sepal.Length ) <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>iris <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href=""></a>  <span class="fu">filter</span>( Species <span class="sc">==</span> <span class="st">"versicolor"</span> ) <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a href=""></a>  <span class="fu">select</span>( Sepal.Length ) <span class="sc">|&gt;</span></span>
 <span id="cb3-4"><a href=""></a>  <span class="fu">t.test</span>( <span class="at">mu=</span><span class="fl">5.843</span> )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     One Sample t-test
 
-data:  .
+data:  select(filter(iris, Species == "versicolor"), Sepal.Length)
 t = 1.274, df = 49, p-value = 0.2087
 alternative hypothesis: true mean is not equal to 5.843
 95 percent confidence interval:
@@ -379,15 +379,15 @@ mean of x
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>iris <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a href=""></a>  <span class="fu">filter</span>( Species <span class="sc">==</span> <span class="st">"virginica"</span> ) <span class="sc">%&gt;%</span></span>
-<span id="cb5-3"><a href=""></a>  <span class="fu">select</span>( Sepal.Length ) <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>iris <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href=""></a>  <span class="fu">filter</span>( Species <span class="sc">==</span> <span class="st">"virginica"</span> ) <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href=""></a>  <span class="fu">select</span>( Sepal.Length ) <span class="sc">|&gt;</span></span>
 <span id="cb5-4"><a href=""></a>  <span class="fu">t.test</span>( <span class="at">mu=</span><span class="fl">5.843</span> )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     One Sample t-test
 
-data:  .
+data:  select(filter(iris, Species == "virginica"), Sepal.Length)
 t = 8.2845, df = 49, p-value = 7.04e-11
 alternative hypothesis: true mean is not equal to 5.843
 95 percent confidence interval:
@@ -412,9 +412,9 @@ mean of x
 <section id="confidence-intervals." class="slide level2">
 <h2>Confidence Intervals.</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a>t <span class="ot">&lt;-</span> iris <span class="sc">%&gt;%</span></span>
-<span id="cb7-2"><a href=""></a>  <span class="fu">filter</span>( Species <span class="sc">==</span> <span class="st">"virginica"</span> ) <span class="sc">%&gt;%</span></span>
-<span id="cb7-3"><a href=""></a>  <span class="fu">select</span>( Sepal.Length ) <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a>t <span class="ot">&lt;-</span> iris <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href=""></a>  <span class="fu">filter</span>( Species <span class="sc">==</span> <span class="st">"virginica"</span> ) <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href=""></a>  <span class="fu">select</span>( Sepal.Length ) <span class="sc">|&gt;</span></span>
 <span id="cb7-4"><a href=""></a>  <span class="fu">t.test</span>( <span class="at">mu=</span><span class="dv">6</span> ) </span>
 <span id="cb7-5"><a href=""></a><span class="fu">names</span>(t)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -465,11 +465,11 @@ attr(,"conf.level")
 <section id="testing-equality-of-2-means" class="slide level2">
 <h2>Testing Equality of 2 Means</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a>x <span class="ot">&lt;-</span> iris <span class="sc">%&gt;%</span> </span>
-<span id="cb11-2"><a href=""></a>  <span class="fu">filter</span>( Species <span class="sc">==</span> <span class="st">"versicolor"</span>) <span class="sc">%&gt;%</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a>x <span class="ot">&lt;-</span> iris <span class="sc">|&gt;</span> </span>
+<span id="cb11-2"><a href=""></a>  <span class="fu">filter</span>( Species <span class="sc">==</span> <span class="st">"versicolor"</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb11-3"><a href=""></a>  <span class="fu">select</span>( Sepal.Length ) </span>
-<span id="cb11-4"><a href=""></a>y <span class="ot">&lt;-</span> iris <span class="sc">%&gt;%</span> </span>
-<span id="cb11-5"><a href=""></a>  <span class="fu">filter</span>( Species <span class="sc">==</span> <span class="st">"virginica"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-4"><a href=""></a>y <span class="ot">&lt;-</span> iris <span class="sc">|&gt;</span> </span>
+<span id="cb11-5"><a href=""></a>  <span class="fu">filter</span>( Species <span class="sc">==</span> <span class="st">"virginica"</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb11-6"><a href=""></a>  <span class="fu">select</span>( Sepal.Length ) </span>
 <span id="cb11-7"><a href=""></a><span class="fu">t.test</span>( x, y )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -773,9 +773,9 @@ virginica-versicolor 0.652 0.4082273 0.8957727     0</code></pre>
 <section id="quarter-mile-speed-engine-type-transmission" class="slide level2">
 <h2>Quarter Mile Speed ~ Engine Type &amp; Transmission</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a>df <span class="sc">%&gt;%</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a>df <span class="sc">|&gt;</span> </span>
 <span id="cb23-2"><a href=""></a>  <span class="fu">mutate</span>( <span class="at">Engine =</span> <span class="fu">factor</span>( <span class="fu">ifelse</span>( vs <span class="sc">==</span> <span class="dv">0</span>, <span class="st">"V-Shaped"</span>, <span class="st">"Straight"</span>) ),</span>
-<span id="cb23-3"><a href=""></a>          <span class="at">Transmission =</span> <span class="fu">factor</span>( <span class="fu">ifelse</span>( am <span class="sc">==</span> <span class="dv">0</span>, <span class="st">"Automatic"</span>,<span class="st">"Manual"</span>)) ) <span class="sc">%&gt;%</span></span>
+<span id="cb23-3"><a href=""></a>          <span class="at">Transmission =</span> <span class="fu">factor</span>( <span class="fu">ifelse</span>( am <span class="sc">==</span> <span class="dv">0</span>, <span class="st">"Automatic"</span>,<span class="st">"Manual"</span>)) ) <span class="sc">|&gt;</span></span>
 <span id="cb23-4"><a href=""></a>  <span class="fu">select</span>( <span class="at">Time =</span> qsec, Engine, Transmission) <span class="ot">-&gt;</span> df </span>
 <span id="cb23-5"><a href=""></a><span class="fu">summary</span>( df )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
