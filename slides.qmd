@@ -8,7 +8,7 @@ execute:
 ---
 
 
-## Choosing an Approach
+## &nbsp;
 
 ```{r}
 #| echo: false
