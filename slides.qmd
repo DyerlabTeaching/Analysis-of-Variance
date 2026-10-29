@@ -8,6 +8,16 @@ execute:
 ---
 
 
+## Choosing an Approach
+
+```{r}
+#| echo: false
+#| fig-align: center
+source("_extensions/dyerlab/figures_dyerlab.R")
+variable_types_grid(highlight = "aov")
+```
+
+
 ## Testing for Specific Values
 
 In general, many times we are interested in testing to see if some samples have a particular value.  Examples may include:
