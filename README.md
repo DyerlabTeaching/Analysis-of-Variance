@@ -17,7 +17,7 @@ This topic focuses on analysis of means, as either equating the mean value of on
 > Learners will conduct hypothesis tests on one, two, or more sample means, using rejection regions and Student's t-tests to determine whether an observed difference in means is statistically meaningful.
 
 - **Bloom's Levels:** Understand (rejection regions), Apply (execute t-tests)
-- **Reinforces:** Establishes the general hypothesis-testing framework (null/alternative hypotheses, rejection regions) that recurs throughout the course's inferential statistics modules.
+- **Reinforces:** Applies the hypothesis-testing framework from Correlation and Regression (null and alternative hypotheses) to differences in means, and adds rejection regions.
 - **Notes:** Emphasizes understanding *why* a rejection region changes with the alternative hypothesis, not just running the test.
 
 ### Extend Mean Testing to Multiple Groups
@@ -25,7 +25,7 @@ This topic focuses on analysis of means, as either equating the mean value of on
 > Learners will perform an analysis of variance (ANOVA) to test the equality of means across two or more groups, then apply Tukey's test to identify which specific pairs of means differ.
 
 - **Bloom's Levels:** Apply (ANOVA), Analyze (post-hoc comparisons)
-- **Reinforces:** Builds directly on the t-test as the two-group special case of ANOVA, and previews the model-comparison thinking used later in Regression.
+- **Reinforces:** Builds directly on the t-test as the two-group special case of ANOVA, and returns to the model-comparison thinking introduced in Regression.
 - **Notes:** Tukey's test is presented as the natural follow-up once ANOVA rejects the null — "yes they differ, but which ones?"
 
 ## Content
