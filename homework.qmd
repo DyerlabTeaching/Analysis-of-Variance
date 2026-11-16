@@ -43,7 +43,7 @@ library( kableExtra )
 url <- "https://dyerlabteaching.github.io/CourseData/Environmental/RiceRivers_2014.csv"
 
 read_csv( url ) |>
-  mutate( Date = as_date( mdy_hms( DateTime, tz = "EST" ) ) ) |>
+  mutate( Date =  mdy_hms( DateTime, tz = "EST" ) )  |>
   group_by( Date ) |>
   summarize( Rain = sum( Rain_in, na.rm = TRUE ),
              WaterTemp = mean( H2O_TempC, na.rm = TRUE ),
@@ -59,8 +59,8 @@ summary( rice )
 
 ```{r}
 ggplot( rice, aes(x = Month, y = DO) ) +
-  geom_boxplot( outlier.shape = NA ) +
-  geom_jitter( aes(color = Weather), width = 0.15 ) +
+  geom_boxplot( outlier.shape = NA, notch=TRUE ) +
+  geom_jitter( aes(color = Weather), width = 0.15, alpha = 0.25 ) +
   ylab( "Daily Mean Dissolved Oxygen (mg/L)" )
 ```
 
