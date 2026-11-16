@@ -1,164 +1,207 @@
 ---
-title: "Analysis of Variance"
+title: "Analysis of Variance Homework"
+subtitle: "Testing, dissecting, and reporting differences among group means"
 author: "YOUR NAME HERE"
-execute:
-  echo: true
 format: dyerlab-html
 ---
 
-Here is some new data to play with a bit to explore one-way and two-way analysis of variance models.  These data represent weight data associated with three different diet types.  There are 76 observations of individuals with the following characteristics:
+## The Idea
 
-- Self-Identified Gender (0/1)
-- Age (earth years. 🤓)
-- Height (cm)
-- Pre.weight & weight6weeks (kg)
-- Diet (1,2,3)
+An analysis of variance answers a deliberately narrow question: is *at least one* group mean different from the others? A reproducible ANOVA does three more things before it says anything about the science, and it reports every one of them:[^ref-aov]
 
-The data are located in the [course data repository](https://dyerlabteaching.github.io/CourseData/Miscellaneous/DietData.csv) as a CSV file named `DietData.csv`.  Load the data in and format things so they look correctly to you.
+1. **Test the overall hypothesis once.** Fit a single model with `aov()` rather than a pile of pairwise $t$-tests, so the chance of a false positive stays at $\alpha$, and report its $F$ statistic, both degrees of freedom, and $P$-value.
+2. **Say how much it matters and where.** Report how much of the variation the groups explain ($R^2$), then use a *post hoc* test (`TukeyHSD()`) to find which groups actually differ, and by how much, in the units of the response.
+3. **Ask whether a second factor changes the answer.** Add the second factor and its interaction, and look at the mean of every combination of the two before interpreting the interaction term.
+
+The write-up then reports each step, with every number read from a variable in memory using an inline `` `r ` `` expression, never typed by hand.
+
+[^ref-aov]: Fitting with `aov()` and `anova()` is covered in the narrative section [Many Sample Hypotheses](https://dyerlabteaching.github.io/Analysis-of-Variance/narrative.html#many-sample-hypotheses), $R^2$ in [Variance Explained](https://dyerlabteaching.github.io/Analysis-of-Variance/narrative.html#variance-explained), `TukeyHSD()` in [Post-Hoc Tests](https://dyerlabteaching.github.io/Analysis-of-Variance/narrative.html#post-hoc-tests), and two-factor models, cell means, and interaction plots in [Two-Factor Models](https://dyerlabteaching.github.io/Analysis-of-Variance/narrative.html#two-factor-models).
+
+The worked example below uses the Rice Rivers Center data you know from the Tidyverse, Correlation, and Regression modules to show the whole workflow on dissolved oxygen. Your assignment applies the same structure to a different response from the same buoy: the depth of the river.
+
+::: {.callout-note}
+## Writing like a research paper
+
+As in the Regression homework, the documents you turn in should read like research, not like R. Your header now includes `echo: false` (see [The full YAML header](#the-full-yaml-header)), which hides the code chunks in the rendered page. The code still has to be there and still has to produce every number, table, and figure, and I can see all of it through the "</> Code" button, but the reader sees only the science. The worked example below shows its code so you can see how it is built; your rendered document will not.
+:::
+
+## A Worked Example
+
+### Methods
+
+> **Data.** We used the water-quality record from the [Rice Rivers Center](https://ricerivers.vcu.edu) buoy on the James River, stored as a CSV in the course data repository. The instruments take a reading every 15 minutes from January through March 2014. Readings 15 minutes apart are not independent of each other, so we averaged them into one value per day, and summed the rainfall for each day. Each day was assigned to its month, and classified as a *Rain* day if any rainfall was recorded and a *Dry* day otherwise.
+
+You can use this chunk exactly as it is in your own document. The daily averaging is the same as in the Regression homework; `month( Date, label = TRUE )` comes from the Tidyverse module and `droplevels()` (which removes the nine months with no data) from the Factors module.
 
 ```{r}
-# load the data in here
+#| message: false
 library( tidyverse )
-read_csv( "https://dyerlabteaching.github.io/CourseData/Miscellaneous/DietData.csv") |> 
-  mutate( gender = factor( gender ), 
-          Diet = factor( Diet, ordered=TRUE )) |>
-  mutate( loss = pre.weight - weight6weeks ) |>
-  select( loss, diet=Diet, gender ) -> df 
+library( lubridate )
+library( knitr )
+library( kableExtra )
 
-```
-## Exploratory Data Anlsysis
+url <- "https://dyerlabteaching.github.io/CourseData/Environmental/RiceRivers_2014.csv"
 
-One of the first things to do is to look at the data and see if there are any obvious things.  Go ahead and explore these data visually.  What do you see?
+read_csv( url ) |>
+  mutate( Date = as_date( mdy_hms( DateTime, tz = "EST" ) ) ) |>
+  group_by( Date ) |>
+  summarize( Rain = sum( Rain_in, na.rm = TRUE ),
+             WaterTemp = mean( H2O_TempC, na.rm = TRUE ),
+             DO = mean( ODO_mgl, na.rm = TRUE ),
+             Depth = mean( Depth_m, na.rm = TRUE ) ) |>
+  mutate( Month = droplevels( month( Date, label = TRUE ) ),
+          Weather = factor( ifelse( Rain > 0, "Rain", "Dry" ) ) ) -> rice
 
-```{r}
-# Data visualization
-
-library( GGally )
-
-ggpairs( df )
-```
-
-
-
-## Estimating Mean Values
-
-Make a table of Weight Loss by gender and diet.
-
-```{r}
-# Table output
+summary( rice )
 ```
 
-
-## 1-Way Analysis of Variance
-
-*Diet Issues:* 
-
-
-The underlying linear model.
-
-
-$$
-y_{ij} = \mu + \tau_{Diet, i} + \epsilon_j
-$$
-
-
-Test the null hypothesis, $H_O:$ *There is no effect of diet on weight loss* (e.g., $\tau_{Diet-1} = \tau_{Diet-2} = \tau_{Diet-3} = 0.0$).  Is there evidence for one diet producing more weight loss than the others?  Create an `aov` analysis and assign it to the variable `fit.diet` and examine its contents.
+> **Exploration.** Cold water holds more dissolved oxygen (DO) than warm water, so we expected DO to fall as the river warmed through the winter. We plotted daily mean DO for each month, marking rainy and dry days.
 
 ```{r}
-# Define model
-fit.diet <- aov( loss ~ diet, data=df )
-summary( fit.diet )
-anova( fit.diet )
-AIC( fit.diet )
+ggplot( rice, aes(x = Month, y = DO) ) +
+  geom_boxplot( outlier.shape = NA ) +
+  geom_jitter( aes(color = Weather), width = 0.15 ) +
+  ylab( "Daily Mean Dissolved Oxygen (mg/L)" )
 ```
 
-Are they all significantly different?  Try the `TukeyHSD()` Interpret the results.
+> **One-factor model.** We tested the null hypothesis that mean DO was the same in all three months ($H_O: \mu_{Jan} = \mu_{Feb} = \mu_{Mar}$) with a one-way analysis of variance, and calculated the fraction of the variation explained by month as $R^2 = SS_{Month} / SS_{Total}$ from the ANOVA table.
 
 ```{r}
-# Posthoc test
-
-tukey.diet <- TukeyHSD( fit.diet )
-tukey.diet
-```
- How much of the variation is explained?  If you notice when you do a summary from a `lm()` (regression) model, it gives you the $R^2$ values directly (remember $R^2 = \frac{SS_{model}}{SS_{Error}}$).  Does `summary()` of your `aov` model give you that?
- 
-```{r}
-# How much variance?
-
+fit_month <- aov( DO ~ Month, data = rice )
+tab_month <- anova( fit_month )
+tab_month
 ```
 
-Since I asked the question, the answer is probably no.  Why does it not do this?  Probably for historical reasons, which are a bit of a pain in the backside.  That being said, there are some `tidy` ways to fix this issue.  I'm going to use the `broom` package which allows us to clean up (or tidy if you will) the model objects.  This will take the model object and pull out *all* the ANOVA table stuff and put it into a `tibble`.
+> **Post hoc comparisons.** To find which months differed, we compared all pairs of months with Tukey's Honest Significant Differences.
 
 ```{r}
-library( broom ) 
-# use your model fit next (I called mine fit.diet)
-tidy_diet <- tidy( fit.diet )
-tidy_diet
+tuk_month <- TukeyHSD( fit_month )
+tuk_month
+plot( tuk_month )
 ```
 
-Now, since it is all easily accessible, we can calculate the $R^2$ from the new model output.
+> **Two-factor model.** To ask whether rain changed DO, and whether its effect depended upon the month, we fit a two-factor model with month, weather, and their interaction. We summarized the mean DO and number of days in every month-by-weather combination and plotted those means with one line per weather type.
 
 ```{r}
-# Estimate the variance explained from the raw sums of squares
-r2_Diet <- tidy_diet$sumsq[1] / sum( tidy_diet$sumsq )
-r2_Diet 
+fit_both <- aov( DO ~ Month * Weather, data = rice )
+tab_both <- anova( fit_both )
+tab_both
 ```
 
+The table of cell means is built in the chunk below the sentence that introduces it, and given a label and caption so the Results can cite it as @tbl-do.[^ref-tables]
 
- 
-
-*Gender:* 
-
-The underlying linear model.
-
-
-$y_{ij} = \mu + \tau_{gender, i} + \epsilon_j$
-
-
-
-Independent of the diet, test the null hypothesis $H_O:$ *There is no difference in weight loss between genders* (e.g., $\tau_{gender-0} = \tau_{gender-2} = 0.0 $).  Is there evidence for one gender being significantly different than another?  How much of the variation is explained (another $R^2$ by gender)?
+[^ref-tables]: Table labels, captions, and `@tbl-` cross-references are covered in the Tidyverse narrative section [Publication-Quality Tables](https://dyerlabteaching.github.io/Tidyverse/narrative.html#publication-quality-tables).
 
 ```{r}
-# partition effects
-```
+#| label: tbl-do
+#| tbl-cap: "Mean daily dissolved oxygen (mg/L) and number of days for each month and weather type at the Rice Rivers Center, January to March 2014."
+rice |>
+  group_by( Month, Weather ) |>
+  summarize( DO = mean( DO ), Days = n() ) -> do_means
 
-How do you interpret these results thus far?
-
-
-# Do genders respond differently to diets?
-
-
-$y_{ijk} = \mu + \tau_{Diet,i} + \tau_{gender,j} + \epsilon_k$
-
-So here we do something a bit different.  We want to simultaneously ask the following questions:
-
-- Do diets influence weight loss?
-- Do genders influence weight loss?
-- Is there an interaction where different genders respond differently to different diets?
-
-In $R$, this is done as:
-
-```{r}
-# diet model
+do_means |>
+  kable( digits = 2 ) |>
+  kable_paper( "striped", full_width = FALSE )
 ```
 
 ```{r}
-# gender model
+ggplot( do_means, aes(x = Month, y = DO, color = Weather, group = Weather) ) +
+  geom_point( size = 3 ) +
+  geom_line() +
+  ylab( "Mean Dissolved Oxygen (mg/L)" )
 ```
+
+### Preparing the reporting values
+
+Before writing the Results, pull the numbers you will quote into one chunk, `format()` them, and give each a short name. `TukeyHSD()` returns a list with one matrix per factor; rows are the pairs of groups (e.g. `"Mar-Jan"`) and columns are `diff`, `lwr`, `upr`, and `p adj`. The ANOVA tables can be indexed by row name and column name the same way.
 
 ```{r}
-# interaction model
+N <- nrow( rice )
+n_rain <- sum( rice$Weather == "Rain" )
+F_month <- format( tab_month["Month", "F value"], digits = 3 )
+df1_month <- tab_month["Month", "Df"]
+df2_month <- tab_month["Residuals", "Df"]
+P_month <- format( tab_month["Month", "Pr(>F)"], digits = 3 )
+R2_month <- format( tab_month["Month", "Sum Sq"] / sum( tab_month$`Sum Sq` ), digits = 2 )
+P_tukey_max <- format( max( tuk_month$Month[, "p adj"] ), digits = 2 )
+drop_JanMar <- format( -tuk_month$Month["Mar-Jan", "diff"], digits = 2 )
+P_weather <- format( tab_both["Weather", "Pr(>F)"], digits = 2 )
+P_inter <- format( tab_both["Month:Weather", "Pr(>F)"], digits = 2 )
 ```
 
-What is the $R^2$ for this model?
+### Results
 
-```{r}
-# best model variance explained
+Across the `r N` days of record, daily mean dissolved oxygen differed among months (*F*~`r df1_month`,`r df2_month`~ = `r F_month`, *P* = `r P_month`), and month explained `r R2_month` of its variation. Every pair of months differed (Tukey HSD, all *P* ≤ `r P_tukey_max`), with DO declining steadily as the river warmed; by March it averaged `r drop_JanMar` mg/L less than in January. Rainy days (`r n_rain` of `r N`) did not differ from dry days (*P* = `r P_weather`). The month-by-weather interaction was not significant (*P* = `r P_inter`), although it came close, and the cell means (@tbl-do) suggest rainy days held relatively more oxygen in February than in the other two months; with only about ten rainy days per month, this pattern would need more data to confirm.
+
+Here is the raw text that produced it:
+
+```{verbatim}
+Across the `r N` days of record, daily mean dissolved oxygen differed among months (*F*~`r df1_month`,`r df2_month`~ = `r F_month`, *P* = `r P_month`), and month explained `r R2_month` of its variation. Every pair of months differed (Tukey HSD, all *P* ≤ `r P_tukey_max`), with DO declining steadily as the river warmed; by March it averaged `r drop_JanMar` mg/L less than in January. Rainy days (`r n_rain` of `r N`) did not differ from dry days (*P* = `r P_weather`). The month-by-weather interaction was not significant (*P* = `r P_inter`), although it came close, and the cell means (@tbl-do) suggest rainy days held relatively more oxygen in February than in the other two months; with only about ten rainy days per month, this pattern would need more data to confirm.
 ```
 
+## Your Assignment
 
-# Which Model is Best?
+The James River at the Rice Rivers Center is tidal, so its depth rises and falls twice a day, but the daily mean should track how much water is coming down the river. Rain upstream should raise it, and so might the seasons.
 
-How would you compare the models you generated?  How do you interpret the findings?
+Produce a standalone **Methods** and **Results** write-up asking **whether the daily mean depth of the river (`Depth`, in meters) differs among months, and whether rainy days differ from dry days**. Use the data chunk from the worked example as it is; it already includes `Depth`.
 
-*Explain, in words, your findings and interpretation of these findings*
+Your document should have:
+
+1. **Methods**, each step a short paragraph followed by its chunk:
+   - *Data*: load and summarize the daily data;
+   - *Exploration*: plot daily mean depth for each month, marking rainy and dry days;
+   - *One-factor model*: test whether mean depth is the same in all three months with `aov()`, and show the ANOVA table;
+   - *Post hoc comparisons*: compare all pairs of months with `TukeyHSD()`, and plot the result;
+   - *Two-factor model*: fit `Month * Weather`, show its ANOVA table, and build a table of the mean depth and number of days in each month-by-weather combination (with a label and caption so you can cite it with `@tbl-`), plus a plot of those means with one line per weather type.
+2. **A reporting-values chunk**: `format()` the numbers your Results report and give each a short name.
+3. **Results**: one paragraph reporting the one-factor test (*F*, both degrees of freedom, *P*, and $R^2$), which months differ and by how much (in meters), and what the two-factor model says about rain and the interaction. Write each number as a bare inline value (`` `r R2_month` ``) with no `format()` in the prose.
+
+Then answer briefly, a sentence or two each:
+
+- Suppose you had skipped the ANOVA and compared each pair of months with its own `t.test()` at $\alpha = 0.05$. What is the chance of at least one false positive across those comparisons if the months really were all the same, and how does `TukeyHSD()` avoid that problem?
+- We averaged the 15-minute readings into one value per day. If you instead ran your one-factor model on all 8,199 raw readings, what would happen to the residual degrees of freedom and the *P*-value, and which assumption of the analysis of variance would that violate? Are consecutive *days* fully independent of each other either?
+
+## What You Turn In
+
+**One file: the rendered, self-contained `.html`.** Not the `.qmd`, and not a copy of this page. Make a *new* Quarto document that contains only your own work: your Methods and Results sections with their chunks, the reporting-values chunk, and your brief answers to the two questions.
+
+The worked example above is a model to imitate, not text to paste into your document.
+
+### Making the document
+
+1. In RStudio: **File ▸ New File ▸ Quarto Document…**
+2. In the dialog, enter a title and your name, leave the engine set to **Knitr**, and click **Create**.
+3. Delete everything RStudio puts below the header (the "Quarto" boilerplate and its example chunk).
+4. Replace the header it generated with the one below.
+5. Save the file into your course project folder as `Analysis-of-Variance-Homework.qmd`.
+6. Write your content, then click **Render** to produce the `.html`. That HTML file is what you submit.
+
+### The full YAML header
+
+```yaml
+---
+title: "Analysis of Variance Homework"
+author: "Your Name"
+date: today
+abstract: |
+  A sentence or two saying what the document does: the data, the question, and what you found.
+format:
+  html:
+    self-contained: true
+    code-tools: true
+execute:
+  echo: false
+---
+```
+
+- **`title` / `author` / `date` / `abstract`**: complete front matter, including a short summary where a scientific paper would put its abstract. `date: today` fills itself in at render time.
+- **`format: html`**: render to a single web page I can open in any browser.
+- **`self-contained: true`**: bundle every image, style, and script *into* that one `.html` file. Without it the file depends on a sibling `*_files/` folder that never makes it into the upload, and your figures and formatting arrive broken.
+- **`code-tools: true`**: adds the "</> Code" button in the top-right that lets a reader view the full source. **This is not optional.** If I cannot see the code behind a wrong answer, I cannot tell whether you were one typo away or lost the plot entirely. That means I cannot give partial credit, point out where it went sideways, or help you fix it. A rendered page with no visible code is graded only on what rendered.
+- **`execute: echo: false`**: It hides every code chunk in the rendered page, so the reader sees only your words, tables, figures, and inline values, the way a published paper reads. The code still runs, and it is still in the document: the "</> Code" button from `code-tools: true` shows the full source to anyone who wants it. Write your Methods so they make sense to someone who never opens that button.
+
+Use this same header layout, including `echo: false`, for every document you turn in from here to the end of the semester.
+
+## How This Is Graded
+
+This assignment is scored with the **Online Homework Rubric** on the Canvas site, the same rubric used for every online homework in this course. It covers online access to the published document, front matter, formatting, and whether the document stands on its own; the remaining points come from the assignment-specific work above.

@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.9.37">
 
   <meta name="author" content="Rodney Dyer, PhD">
-  <title>Analysis of Means</title>
+  <title>Analysis of Variance</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -196,7 +196,7 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Analysis of Means</h1>
+  <h1 class="title">Analysis of Variance</h1>
   <p class="subtitle">Testing Equality of Means</p>
 
 <div class="quarto-title-authors">
@@ -214,7 +214,8 @@ Rodney Dyer, PhD
 <img data-src="slides_files/figure-revealjs/unnamed-chunk-1-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
 <section id="testing-for-specific-values" class="slide level2">
 <h2>Testing for Specific Values</h2>
-<p>In general, many times we are interested in testing to see if some samples have a particular value. Examples may include:</p>
+<p>In general, many times we are interested in testing to see if some samples have a particular value.</p>
+<p>Examples may include:</p>
 <ul>
 <li class="fragment"><p><span class="math inline">\(H_O: \mu = c\)</span> The mean of the data is equal to a specific value.</p></li>
 <li class="fragment"><p><span class="math inline">\(H_O: \mu_1 = \mu_2\)</span> These two samples have the same mean.</p></li>
@@ -223,39 +224,46 @@ Rodney Dyer, PhD
 </section>
 <section id="sample-tests" class="slide level2">
 <h2>1-Sample Tests</h2>
-<p>The 1-sample <code>t.test()</code> defined by the null hypothesis <span class="math inline">\(H_O: \mu = c\)</span> is where we are testing to see if this sample</p>
-<p><span class="math inline">\(t =\frac{\bar{x}-\mu}{s_{\bar{x}}}\)</span></p>
+<p>The 1-sample <code>t.test()</code> defined by the null hypothesis:</p>
+<p><span class="math inline">\(H_O: \mu = c\)</span></p>
+<p>Tests to see if the mean of a set of data is equivallent to a specific value.</p>
+<div class="fragment">
+<p>The t-statistic is: <span class="math display">\[
+t =\frac{\bar{x}-\mu}{s_{\bar{x}}}
+\]</span></p>
+</div>
 </section>
 <section id="degrees-of-freedom-rejection-regions" class="slide level2">
 <h2>Degrees of Freedom &amp; Rejection Regions</h2>
 
 <img data-src="slides_files/figure-revealjs/unnamed-chunk-2-1.png" width="960" class="r-stretch"></section>
-<section id="asymptotic-nature-of-samples" class="slide level2">
+<section id="asymptotic-nature-of-samples" class="slide level2 smaller">
 <h2>Asymptotic Nature of Samples</h2>
-<p>As <span class="math inline">\(df \to \infty\)</span> then <span class="math inline">\(PDF(t) \to Normal\)</span></p>
-<p>&nbsp;</p>
-<p>Which is defined (in such elegance) as:</p>
-<p>&nbsp;</p>
-<p><span class="math inline">\(P(t|x,v)= \frac{ \Gamma\left( \frac{v+1}{2}\right)}{\sqrt{v\pi}\Gamma\left( \frac{v}{2}\right)} \left( 1 + \frac{x^2}{v}\right)^{-\frac{v+1}{2}}\)</span></p>
+<p>As <span class="math inline">\(df \to \infty\)</span>, <span class="math inline">\(PDF(t) \to Normal\)</span>. Which is defined (in such elegance) as:</p>
+<p><span class="math display">\[
+P(t|x,v)= \frac{ \Gamma\left( \frac{v+1}{2}\right)}{\sqrt{v\pi}\Gamma\left( \frac{v}{2}\right)} \left( 1 + \frac{x^2}{v}\right)^{-\frac{v+1}{2}}
+\]</span></p>
+<p>where:</p>
+<ul>
+<li><span class="math inline">\(x\)</span> is the value of the <span class="math inline">\(t\)</span> statistic,</li>
+<li><span class="math inline">\(v\)</span> is the degrees of freedom (<span class="math inline">\(df = N - 1\)</span> for a one-sample test), and</li>
+<li><span class="math inline">\(\Gamma\)</span> is the Gamma function, which extends the factorial to non-integers (<span class="math inline">\(\Gamma(n) = (n-1)!\)</span> for whole numbers).</li>
+</ul>
 </section>
-<section id="rejection-regions" class="slide level2">
-<h2>Rejection Regions</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<p>Two Tailed Test: <span class="math inline">\(H_A: \mu \ne c\)</span></p>
-<p>One Tailed Test: <span class="math inline">\(H_A: \mu \lt c\)</span></p>
-<p>One Tailed Test: <span class="math inline">\(H_A: \mu \gt c\)</span></p>
-</div><div class="column" style="width:50%;">
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-3-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</div></div>
+<section id="h_o-mu-c" class="slide level2">
+<h2><span class="math inline">\(H_O: \mu = c\)</span></h2>
+
+<img data-src="slides_files/figure-revealjs/unnamed-chunk-3-1.png" width="960" class="r-stretch"><p>Two-tailed: reject <span class="math inline">\(H_O\)</span> if <span class="math inline">\(\bar{x}\)</span> is far from <span class="math inline">\(c\)</span> in <em>either</em> direction.</p>
+</section>
+<section id="h_o-mu-ge-c" class="slide level2">
+<h2><span class="math inline">\(H_O: \mu \ge c\)</span></h2>
+
+<img data-src="slides_files/figure-revealjs/unnamed-chunk-4-1.png" width="960" class="r-stretch"><p>One-tailed: reject <span class="math inline">\(H_O\)</span> only if <span class="math inline">\(\bar{x}\)</span> is far <em>below</em> <span class="math inline">\(c\)</span>.</p>
+</section>
+<section id="h_o-mu-le-c" class="slide level2">
+<h2><span class="math inline">\(H_O: \mu \le c\)</span></h2>
+
+<img data-src="slides_files/figure-revealjs/unnamed-chunk-5-1.png" width="960" class="r-stretch"><p>One-tailed: reject <span class="math inline">\(H_O\)</span> only if <span class="math inline">\(\bar{x}\)</span> is far <em>above</em> <span class="math inline">\(c\)</span>.</p>
 </section>
 <section>
 <section id="one-sample-test" class="title-slide slide level1 center" data-background-color="black" data-background-image="media/contour.png" data-background-size="initial" data-background-position="right">
@@ -334,7 +342,7 @@ mean of x
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-6-1.png" width="960"></p>
+<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-8-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -370,7 +378,7 @@ mean of x
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-8-1.png" width="960"></p>
+<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-10-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -406,7 +414,7 @@ mean of x
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-10-1.png" width="960"></p>
+<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-12-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -459,7 +467,7 @@ attr(,"conf.level")
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-13-1.png" width="960"></p>
+<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-15-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -493,7 +501,7 @@ mean of x mean of y
 </section>
 <section id="paired-t-tests" class="slide level2">
 <h2>Paired t-tests</h2>
-<p>If the data are collected in a way that there is supposed to be a <em>connection</em> between the values of <code>x</code> and <code>y</code> (e.g., looking at fluctuating asymeetry in wing shape in individual birds where left wing = right wing), you could instead treat the two data as:</p>
+<p>If the data are collected in a way that there is supposed to be a <em>connection</em> between the values of <code>x</code> and <code>y</code> (e.g., looking at fluctuating asymmetry in wing shape in individual birds where left wing = right wing), you could instead treat the two data as:</p>
 <p><span class="math inline">\(H_O: \mu_{x} -  \mu_{y} = 0.0\)</span></p>
 <p>and can be evaluated as:</p>
 <div class="cell">
@@ -553,7 +561,7 @@ mean of x mean of y
 </section>
 <section id="multiple-testing-problem-2" class="slide level2">
 <h2>Multiple Testing Problem</h2>
-<p>If we test all three pairs of tests for the <em>Iris</em> data, what mean that we are expecting,</p>
+<p>If we test all three pairs of tests for the <em>Iris</em> data, we are expecting,</p>
 <p>&nbsp;</p>
 <p><font color="red">even if there are absolutely <strong>no differences</strong> between species,</font></p>
 <p>&nbsp;</p>
@@ -566,28 +574,28 @@ mean of x mean of y
 <section id="a-linear-model-approach" class="slide level2">
 <h2>A Linear Model Approach</h2>
 
-<img data-src="slides_files/figure-revealjs/unnamed-chunk-16-1.png" width="960" class="r-stretch"><p><span class="math inline">\(y_{ij} = \mu + \tau_i + \epsilon_j\)</span></p>
+<img data-src="slides_files/figure-revealjs/unnamed-chunk-18-1.png" width="960" class="r-stretch"><p><span class="math inline">\(y_{ij} = \mu + \tau_i + \epsilon_{ij}\)</span></p>
 </section>
 <section id="a-linear-model-approach-1" class="slide level2">
 <h2>A Linear Model Approach</h2>
 
-<img data-src="slides_files/figure-revealjs/unnamed-chunk-17-1.png" width="960" class="r-stretch"><p><span class="math inline">\(y_{ij} = \mu + \tau_i + \epsilon_j\)</span></p>
+<img data-src="slides_files/figure-revealjs/unnamed-chunk-19-1.png" width="960" class="r-stretch"><p><span class="math inline">\(y_{ij} = \mu + \tau_i + \epsilon_{ij}\)</span></p>
 </section>
 <section id="a-linear-model-approach-2" class="slide level2">
 <h2>A Linear Model Approach</h2>
 
-<img data-src="slides_files/figure-revealjs/unnamed-chunk-18-1.png" width="960" class="r-stretch"><p><span class="math inline">\(y_{ij} = \mu + \tau_i + \epsilon_j\)</span></p>
+<img data-src="slides_files/figure-revealjs/unnamed-chunk-20-1.png" width="960" class="r-stretch"><p><span class="math inline">\(y_{ij} = \mu + \tau_i + \epsilon_{ij}\)</span></p>
 </section>
 <section id="a-linear-model-approach-3" class="slide level2 scrollable">
 <h2>A Linear Model Approach</h2>
-<p><span class="math inline">\(y_{ij} = \mu + \tau_i + \epsilon_j\)</span></p>
+<p><span class="math inline">\(y_{ij} = \mu + \tau_i + \epsilon_{ij}\)</span></p>
 <p>where:</p>
 <ul>
 <li><span class="math inline">\(\mu\)</span> is the overall mean of all the data.<br>
 </li>
 <li><span class="math inline">\(\tau_i\)</span> is the deviation of the <span class="math inline">\(i^{th}\)</span> treatment level from the overall mean.<br>
 </li>
-<li><span class="math inline">\(\epsilon_j\)</span> is the deviation of the observation from the treatment mean.</li>
+<li><span class="math inline">\(\epsilon_{ij}\)</span> is the deviation of the <span class="math inline">\(j^{th}\)</span> observation from the mean of treatment <span class="math inline">\(i\)</span>.</li>
 </ul>
 <div class="fragment">
 <p><em>The Null Hypothesis</em> <span class="math inline">\(H_O: \tau_i = 0\)</span></p>
@@ -622,7 +630,7 @@ mean of x mean of y
 <tr class="even">
 <td>Within</td>
 <td><span class="math inline">\(N-K\)</span></td>
-<td><span class="math inline">\(\sum_{i=1}^Kn_i\left( \sum_{j=1}^{N_i}(x_{ij}-\bar{x}_i)^2 \right)\)</span></td>
+<td><span class="math inline">\(\sum_{i=1}^K \left( \sum_{j=1}^{N_i}(x_{ij}-\bar{x}_i)^2 \right)\)</span></td>
 <td><span class="math inline">\(\frac{SS_W}{N-K}\)</span></td>
 </tr>
 <tr class="odd">
@@ -720,8 +728,8 @@ virginica-versicolor 0.652 0.4082273 0.8957727     0</code></pre>
 <section id="the-tukey-test-1" class="slide level2">
 <h2>The Tukey Test</h2>
 <p>The difference is:</p>
-<p><span class="math inline">\(q = \frac{\bar{y}_{max} - \bar{y}_{min}}{\sigma \sqrt{2/N}}\)</span></p>
-<p>and the confidence intervals are based upon Student-ized confidence ranges.</p>
+<p><span class="math inline">\(q = \frac{\bar{y}_{max} - \bar{y}_{min}}{\sqrt{MS_W / n}}\)</span></p>
+<p>where <span class="math inline">\(n\)</span> is the number of observations in each group, and the confidence intervals are based upon the Studentized range distribution.</p>
 </section>
 <section id="visualizing-the-tukey" class="slide level2">
 <h2>Visualizing the Tukey</h2>
@@ -729,7 +737,7 @@ virginica-versicolor 0.652 0.4082273 0.8957727     0</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="fu">plot</span>( tuk, <span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">2</span>) )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
-<img data-src="slides_files/figure-revealjs/unnamed-chunk-22-1.png" width="960" class="r-stretch"></section></section>
+<img data-src="slides_files/figure-revealjs/unnamed-chunk-24-1.png" width="960" class="r-stretch"></section></section>
 <section>
 <section id="two-factor-models" class="title-slide slide level1 center" data-background-color="black" data-background-image="media/contour.png" data-background-size="initial" data-background-position="right">
 <h1>Two-Factor Models</h1>
@@ -737,15 +745,15 @@ virginica-versicolor 0.652 0.4082273 0.8957727     0</code></pre>
 </section>
 <section id="analysis-with-2-predictors." class="slide level2">
 <h2>Analysis with 2 Predictors.</h2>
-<p>There are times when we have more than on treatment category for a response. For example, a growth experiment may have a treatment that is high light and low light as well as one that has fewer than normal, normal, and more than normal nutrients. These are called <em>2-factor Analysis of Variance</em>.</p>
+<p>There are times when we have more than one treatment category for a response. For example, a growth experiment may have a treatment that is high light and low light as well as one that has fewer than normal, normal, and more than normal nutrients. These are called <em>2-factor Analysis of Variance</em>.</p>
 <ul>
 <li>Each factor can be considered independently.</li>
-<li>The interaction between factors can be exmained as well.</li>
+<li>The interaction between factors can be examined as well.</li>
 </ul>
 </section>
 <section id="specifying-a-two-factor-model" class="slide level2">
 <h2>Specifying A Two Factor Model</h2>
-<p>Here i’m going to use a new data set because there is only one categorical variable in the <em>iris</em> data used above. Here is the old <em>Motor Trend Cars</em> dataset</p>
+<p>Here I’m going to use a new data set because there is only one categorical variable in the <em>iris</em> data used above. Here is the old <em>Motor Trend Cars</em> dataset</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a>df <span class="ot">&lt;-</span> mtcars</span>
 <span id="cb21-2"><a href=""></a><span class="fu">summary</span>( df )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -774,22 +782,23 @@ virginica-versicolor 0.652 0.4082273 0.8957727     0</code></pre>
 </div>
 </div>
 </section>
-<section id="quarter-mile-speed-engine-type-transmission" class="slide level2">
-<h2>Quarter Mile Speed ~ Engine Type &amp; Transmission</h2>
+<section id="speed-engine-type-transmission" class="slide level2">
+<h2>Speed ~ Engine Type &amp; Transmission</h2>
+<p>I’m renaming here for brevity in the plot labels.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a>df <span class="sc">|&gt;</span> </span>
-<span id="cb23-2"><a href=""></a>  <span class="fu">mutate</span>( <span class="at">Engine =</span> <span class="fu">factor</span>( <span class="fu">ifelse</span>( vs <span class="sc">==</span> <span class="dv">0</span>, <span class="st">"V-Shaped"</span>, <span class="st">"Straight"</span>) ),</span>
-<span id="cb23-3"><a href=""></a>          <span class="at">Transmission =</span> <span class="fu">factor</span>( <span class="fu">ifelse</span>( am <span class="sc">==</span> <span class="dv">0</span>, <span class="st">"Automatic"</span>,<span class="st">"Manual"</span>)) ) <span class="sc">|&gt;</span></span>
+<span id="cb23-2"><a href=""></a>  <span class="fu">mutate</span>( <span class="at">Engine =</span> <span class="fu">factor</span>( <span class="fu">ifelse</span>( vs <span class="sc">==</span> <span class="dv">0</span>, <span class="st">"V"</span>, <span class="st">"Straight"</span>) ),</span>
+<span id="cb23-3"><a href=""></a>          <span class="at">Transmission =</span> <span class="fu">factor</span>( <span class="fu">ifelse</span>( am <span class="sc">==</span> <span class="dv">0</span>, <span class="st">"Auto"</span>,<span class="st">"Manual"</span>)) ) <span class="sc">|&gt;</span></span>
 <span id="cb23-4"><a href=""></a>  <span class="fu">select</span>( <span class="at">Time =</span> qsec, Engine, Transmission) <span class="ot">-&gt;</span> df </span>
 <span id="cb23-5"><a href=""></a><span class="fu">summary</span>( df )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>      Time            Engine      Transmission
- Min.   :14.50   Straight:14   Automatic:19   
- 1st Qu.:16.89   V-Shaped:18   Manual   :13   
- Median :17.71                                
- Mean   :17.85                                
- 3rd Qu.:18.90                                
- Max.   :22.90                                </code></pre>
+<pre><code>      Time            Engine   Transmission
+ Min.   :14.50   Straight:14   Auto  :19   
+ 1st Qu.:16.89   V       :18   Manual:13   
+ Median :17.71                             
+ Mean   :17.85                             
+ 3rd Qu.:18.90                             
+ Max.   :22.90                             </code></pre>
 </div>
 </div>
 </section>
@@ -851,21 +860,22 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href=""></a><span class="fu">plot</span>( <span class="fu">TukeyHSD</span>( fit.both, <span class="st">"Engine"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
-<img data-src="slides_files/figure-revealjs/unnamed-chunk-28-1.png" width="960" class="r-stretch"></section>
+<img data-src="slides_files/figure-revealjs/unnamed-chunk-30-1.png" width="960" class="r-stretch"></section>
 <section id="section-2" class="slide level2">
 <h2>&nbsp;</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a><span class="fu">plot</span>( <span class="fu">TukeyHSD</span>( fit.both, <span class="st">"Transmission"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
-<img data-src="slides_files/figure-revealjs/unnamed-chunk-29-1.png" width="960" class="r-stretch"></section>
+<img data-src="slides_files/figure-revealjs/unnamed-chunk-31-1.png" width="960" class="r-stretch"></section>
 <section id="section-3" class="slide level2">
 <h2>&nbsp;</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href=""></a><span class="fu">plot</span>( <span class="fu">TukeyHSD</span>( fit.both, <span class="st">"Engine:Transmission"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href=""></a><span class="fu">par</span>( <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">13</span>, <span class="dv">2</span>, <span class="dv">1</span>), <span class="at">las =</span> <span class="dv">1</span> )  <span class="co"># wide left margin, horizontal labels</span></span>
+<span id="cb33-2"><a href=""></a><span class="fu">plot</span>( <span class="fu">TukeyHSD</span>( fit.both, <span class="st">"Engine:Transmission"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
-<img data-src="slides_files/figure-revealjs/unnamed-chunk-30-1.png" width="960" class="r-stretch"></section>
+<img data-src="slides_files/figure-revealjs/unnamed-chunk-32-1.png" width="960" class="r-stretch"></section>
 <section id="questions" class="slide level2">
 <h2>Questions</h2>
 <div class="quarto-layout-panel" data-layout-ncol="2">

@@ -2503,9 +2503,111 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
+</section>
+</section>
+<section id="narrative.qmd-and-slides.qmd-2026-11-16" class="level3">
+<h3 class="anchored" data-anchor-id="narrative.qmd-and-slides.qmd-2026-11-16">narrative.qmd and slides.qmd — 2026-11-16</h3>
+<p>Resolved the four flagged items above and corrected content errors found in a review.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Issue</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>narrative</td>
+<td>Flag: “a test statistic that we have an idea about its behavior”</td>
+<td>“a test statistic whose behavior we understand”</td>
+</tr>
+<tr class="even">
+<td>narrative</td>
+<td>Flag: second denominator <span class="math inline">\(N\)</span> in the SE of a difference</td>
+<td><span class="math inline">\(N_2\)</span></td>
+</tr>
+<tr class="odd">
+<td>narrative</td>
+<td>Flag: <em>F</em>/Fisher sentence did not parse</td>
+<td>Rewritten; now also states the ANOVA assumptions</td>
+</tr>
+<tr class="even">
+<td>narrative</td>
+<td>Flag: “have significantly different.”</td>
+<td>“has a significantly different mean sepal length.”</td>
+</tr>
+<tr class="odd">
+<td>narrative</td>
+<td><span class="math inline">\(s_{\bar{x}}\)</span> called the standard deviation of the data (also in the CI paragraph)</td>
+<td>Standard error of the mean, <span class="math inline">\(s/\sqrt{N}\)</span></td>
+</tr>
+<tr class="even">
+<td>both</td>
+<td>Rejection-region plot shaded ±2.064 on the <span class="math inline">\(df = 1\)</span> curve, labelled 2.5% per tail (true area ≈ 14%)</td>
+<td>Plot redrawn for <span class="math inline">\(df = 24\)</span> with <code>qt()</code>-computed cutoffs</td>
+</tr>
+<tr class="odd">
+<td>narrative</td>
+<td>“if the difference in the numerator is small we would reject”</td>
+<td>“large relative to its standard error”</td>
+</tr>
+<tr class="even">
+<td>narrative</td>
+<td>Familywise error given as <span class="math inline">\(0.05^k\)</span>; “paired” used for pairwise</td>
+<td><span class="math inline">\(1-(1-0.05)^k\)</span>; “pairwise”</td>
+</tr>
+<tr class="odd">
+<td>both</td>
+<td>Stray <span class="math inline">\(n_i\)</span> in the <span class="math inline">\(SS_{Within}\)</span> cell of the ANOVA table</td>
+<td>Removed</td>
+</tr>
+<tr class="even">
+<td>narrative</td>
+<td><em>F</em> “has an expectation of” (it is the density); “<span class="math inline">\(2e^{-16}\)</span>”</td>
+<td>“density”; “less than <span class="math inline">\(2 \times 10^{-16}\)</span>”</td>
+</tr>
+<tr class="odd">
+<td>slides</td>
+<td><span class="math inline">\(\epsilon_j\)</span> in <span class="math inline">\(y_{ij} = \mu + \tau_i + \epsilon_j\)</span></td>
+<td><span class="math inline">\(\epsilon_{ij}\)</span></td>
+</tr>
+<tr class="even">
+<td>slides</td>
+<td>Tukey <span class="math inline">\(q\)</span> denominator <span class="math inline">\(\sigma\sqrt{2/N}\)</span></td>
+<td><span class="math inline">\(\sqrt{MS_W/n}\)</span></td>
+</tr>
+<tr class="odd">
+<td>slides</td>
+<td>Title “Analysis of Means”; typos (asymeetry, exmained, “more than on”, “i’m”)</td>
+<td>“Analysis of Variance”; fixed</td>
+</tr>
+<tr class="even">
+<td>module.yml</td>
+<td>Epigraph called two-sample tests “paired”</td>
+<td>“two-sample and paired”</td>
+</tr>
+</tbody>
+</table>
+<p>Added to the narrative so it covers what the slides and homework use: a Welch’s-test note, a <em>Paired Samples</em> subsection (<code>sleep</code> data), Type I/II error definitions, and a <em>Two-Factor Models</em> section (<code>mtcars</code>, interaction, <code>TukeyHSD(which=)</code>, unbalanced-design caution).</p>
+<p>Replaced the empty <code>in-class.qmd</code> with an eight-step <code>mtcars</code> activity (MPG ~ cylinders, Tukey, <span class="math inline">\(R^2\)</span>, then cylinders × transmission and an interaction plot), plus <code>_in-class_key.qmd</code>. Added a <em>Variance Explained</em> subsection to the narrative, since the activity needs <span class="math inline">\(R^2\)</span> from the ANOVA table.</p>
+</section>
+<section id="homework.qmd-2026-11-16" class="level3">
+<h3 class="anchored" data-anchor-id="homework.qmd-2026-11-16">homework.qmd — 2026-11-16</h3>
+<p>Rebuilt the homework to <code>HOMEWORK-DESIGN-GUIDE.md</code> on the Rice Rivers Center data (daily means, Jan–Mar 2014), replacing the diet-data fill-in version. The worked example is dissolved oxygen ~ Month (+ Tukey, <span class="math inline">\(R^2\)</span>) and DO ~ Month × Weather (rain vs dry day); the student task is the same pipeline on river depth. Two Analyze questions: familywise error vs. Tukey, and pseudoreplication / independence from the 15-minute readings. <code>_homework-key.qmd</code> rewritten as a full-marks submission.</p>
+<p>slides.qmd: the <span class="math inline">\(t\)</span> density slide now defines <span class="math inline">\(x\)</span>, <span class="math inline">\(v\)</span> and <span class="math inline">\(\Gamma\)</span>. The interaction Tukey plot uses short factor levels (<code>V</code>/<code>Straight</code>, <code>Auto</code>/<code>Manual</code>) and horizontal labels; the narrative uses the same levels.</p>
+<p>slides.qmd: split the single “Rejection Regions” slide into three slides titled by the null hypothesis (<span class="math inline">\(\mu = c\)</span>, <span class="math inline">\(\mu \ge c\)</span>, <span class="math inline">\(\mu \le c\)</span>), each showing the <span class="math inline">\(t\)</span> distribution (<span class="math inline">\(df = 24\)</span>) with its rejection region shaded and the computed cutoff in the caption.</p>
+</section>
+<section id="homework.qmd-in-class.qmd-2026-11-16" class="level3">
+<h3 class="anchored" data-anchor-id="homework.qmd-in-class.qmd-2026-11-16">homework.qmd / in-class.qmd — 2026-11-16</h3>
+<p>Homework header now requires <code>execute: echo: false</code> (research-paper style; <code>code-tools</code> still shows the source), with an explanation bullet, a callout above the worked example, and a matching callout in <code>in-class.qmd</code>. The worked example and the in-class activity keep their code visible.</p>
 <!-- -->
 
-</section>
 </section>
 </section>
 
@@ -3009,7 +3111,44 @@ window.Quarto = {
 <span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> ~19 <span class="pp">|</span> &quot;a test statistic that we have an idea about its behavior&quot; <span class="pp">|</span> Awkward construction (resumptive &quot;its&quot; after &quot;that&quot;) — reads better as &quot;a test statistic whose behavior we understand,&quot; but rewriting changes your phrasing, so left for you to pick. <span class="pp">|</span></span>
 <span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> ~144 <span class="pp">|</span> $s_{\bar{x}_1-\bar{x}_2} = \sqrt{ \frac{s_1^2}{N_1}+\frac{s_2^2}{N}}$ <span class="pp">|</span> The second denominator is $N$, not $N_2$, breaking the parallel with the first term. Likely a typo, but it&#39;s a formula, not prose, so I didn&#39;t touch it — please confirm and fix if I&#39;m right. <span class="pp">|</span></span>
 <span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> ~206 <span class="pp">|</span> &quot;as an homage to Ronald Fisher (the F-statistic) has a pretty well understood distribution under a few conditions.&quot; <span class="pp">|</span> Sentence doesn&#39;t parse — the subject of &quot;has&quot; is unclear. Probably meant something like &quot;The F-statistic, so named as an homage to Ronald Fisher, has a pretty well understood distribution under a few conditions,&quot; but there are other ways to fix it, so I left the rewrite to you. <span class="pp">|</span></span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> ~238 <span class="pp">|</span> &quot;we can interpret these results as suggesting that each of the three species have significantly different.&quot; <span class="pp">|</span> Incomplete — &quot;different&quot; needs an object (different *what*? &quot;different mean sepal lengths&quot;? &quot;different from one another&quot;?). Needs your intended meaning to complete it. <span class="pp">|</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> ~238 <span class="pp">|</span> &quot;we can interpret these results as suggesting that each of the three species have significantly different.&quot; <span class="pp">|</span> Incomplete — &quot;different&quot; needs an object (different *what*? &quot;different mean sepal lengths&quot;? &quot;different from one another&quot;?). Needs your intended meaning to complete it. <span class="pp">|</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="fu">### narrative.qmd and slides.qmd — 2026-11-16</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>Resolved the four flagged items above and corrected content errors found in a review.</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> File <span class="pp">|</span> Issue <span class="pp">|</span> Fix <span class="pp">|</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> narrative <span class="pp">|</span> Flag: &quot;a test statistic that we have an idea about its behavior&quot; <span class="pp">|</span> &quot;a test statistic whose behavior we understand&quot; <span class="pp">|</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> narrative <span class="pp">|</span> Flag: second denominator $N$ in the SE of a difference <span class="pp">|</span> $N_2$ <span class="pp">|</span></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> narrative <span class="pp">|</span> Flag: *F*/Fisher sentence did not parse <span class="pp">|</span> Rewritten; now also states the ANOVA assumptions <span class="pp">|</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> narrative <span class="pp">|</span> Flag: &quot;have significantly different.&quot; <span class="pp">|</span> &quot;has a significantly different mean sepal length.&quot; <span class="pp">|</span></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> narrative <span class="pp">|</span> $s_{\bar{x}}$ called the standard deviation of the data (also in the CI paragraph) <span class="pp">|</span> Standard error of the mean, $s/\sqrt{N}$ <span class="pp">|</span></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> both <span class="pp">|</span> Rejection-region plot shaded ±2.064 on the $df = 1$ curve, labelled 2.5% per tail (true area ≈ 14%) <span class="pp">|</span> Plot redrawn for $df = 24$ with <span class="in">`qt()`</span>-computed cutoffs <span class="pp">|</span></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> narrative <span class="pp">|</span> &quot;if the difference in the numerator is small we would reject&quot; <span class="pp">|</span> &quot;large relative to its standard error&quot; <span class="pp">|</span></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> narrative <span class="pp">|</span> Familywise error given as $0.05^k$; &quot;paired&quot; used for pairwise <span class="pp">|</span> $1-(1-0.05)^k$; &quot;pairwise&quot; <span class="pp">|</span></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> both <span class="pp">|</span> Stray $n_i$ in the $SS_{Within}$ cell of the ANOVA table <span class="pp">|</span> Removed <span class="pp">|</span></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> narrative <span class="pp">|</span> *F* &quot;has an expectation of&quot; (it is the density); &quot;$2e^{-16}$&quot; <span class="pp">|</span> &quot;density&quot;; &quot;less than $2 \times 10^{-16}$&quot; <span class="pp">|</span></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> slides <span class="pp">|</span> $\epsilon_j$ in $y_{ij} = \mu + \tau_i + \epsilon_j$ <span class="pp">|</span> $\epsilon_{ij}$ <span class="pp">|</span></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> slides <span class="pp">|</span> Tukey $q$ denominator $\sigma\sqrt{2/N}$ <span class="pp">|</span> $\sqrt{MS_W/n}$ <span class="pp">|</span></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> slides <span class="pp">|</span> Title &quot;Analysis of Means&quot;; typos (asymeetry, exmained, &quot;more than on&quot;, &quot;i&#39;m&quot;) <span class="pp">|</span> &quot;Analysis of Variance&quot;; fixed <span class="pp">|</span></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> module.yml <span class="pp">|</span> Epigraph called two-sample tests &quot;paired&quot; <span class="pp">|</span> &quot;two-sample and paired&quot; <span class="pp">|</span></span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>Added to the narrative so it covers what the slides and homework use: a Welch&#39;s-test note, a *Paired Samples* subsection (`sleep` data), Type I/II error definitions, and a *Two-Factor Models* section (<span class="in">`mtcars`</span>, interaction, <span class="in">`TukeyHSD(which=)`</span>, unbalanced-design caution).</span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>Replaced the empty <span class="in">`in-class.qmd`</span> with an eight-step <span class="in">`mtcars`</span> activity (MPG ~ cylinders, Tukey, $R^2$, then cylinders × transmission and an interaction plot), plus <span class="in">`_in-class_key.qmd`</span>. Added a *Variance Explained* subsection to the narrative, since the activity needs $R^2$ from the ANOVA table.</span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a><span class="fu">### homework.qmd — 2026-11-16</span></span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>Rebuilt the homework to <span class="in">`HOMEWORK-DESIGN-GUIDE.md`</span> on the Rice Rivers Center data (daily means, Jan–Mar 2014), replacing the diet-data fill-in version. The worked example is dissolved oxygen ~ Month (+ Tukey, $R^2$) and DO ~ Month × Weather (rain vs dry day); the student task is the same pipeline on river depth. Two Analyze questions: familywise error vs. Tukey, and pseudoreplication / independence from the 15-minute readings. <span class="in">`_homework-key.qmd`</span> rewritten as a full-marks submission.</span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a>slides.qmd: the $t$ density slide now defines $x$, $v$ and $\Gamma$. The interaction Tukey plot uses short factor levels (<span class="in">`V`</span>/<span class="in">`Straight`</span>, <span class="in">`Auto`</span>/<span class="in">`Manual`</span>) and horizontal labels; the narrative uses the same levels.</span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a>slides.qmd: split the single &quot;Rejection Regions&quot; slide into three slides titled by the null hypothesis ($\mu = c$, $\mu \ge c$, $\mu \le c$), each showing the $t$ distribution ($df = 24$) with its rejection region shaded and the computed cutoff in the caption.</span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a><span class="fu">### homework.qmd / in-class.qmd — 2026-11-16</span></span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>Homework header now requires <span class="in">`execute: echo: false`</span> (research-paper style; <span class="in">`code-tools`</span> still shows the source), with an explanation bullet, a callout above the worked example, and a matching callout in <span class="in">`in-class.qmd`</span>. The worked example and the in-class activity keep their code visible.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

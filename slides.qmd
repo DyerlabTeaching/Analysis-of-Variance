@@ -1,5 +1,5 @@
 ---
-title: "Analysis of Means"
+title: "Analysis of Variance"
 subtitle: "Testing Equality of Means"
 author: Rodney Dyer, PhD
 format: dyerlab-revealjs
@@ -20,7 +20,9 @@ variable_types_grid(highlight = "aov")
 
 ## Testing for Specific Values
 
-In general, many times we are interested in testing to see if some samples have a particular value.  Examples may include:
+In general, many times we are interested in testing to see if some samples have a particular value.  
+
+Examples may include:
 
 ::: {.incremental}
 - $H_O: \mu = c$  The mean of the data is equal to a specific value.  
@@ -35,10 +37,18 @@ In general, many times we are interested in testing to see if some samples have 
 
 ## 1-Sample Tests
 
-The 1-sample `t.test()` defined by the null hypothesis $H_O: \mu = c$ is where we are testing to see if this sample 
+The 1-sample `t.test()` defined by the null hypothesis:
 
-$t =\frac{\bar{x}-\mu}{s_{\bar{x}}}$
+$H_O: \mu = c$ 
 
+Tests to see if the mean of a set of data is equivallent to a specific value.
+
+::: {.fragment}
+The t-statistic is:
+$$
+t =\frac{\bar{x}-\mu}{s_{\bar{x}}}
+$$
+:::
 
 
 
@@ -63,51 +73,72 @@ ggplot( d, aes(x=t,y=f,color=df)) + geom_line()
 ```
 
 
-## Asymptotic Nature of Samples
+## Asymptotic Nature of Samples {.smaller}
 
-As $df \to \infty$ then $PDF(t) \to Normal$
+As $df \to \infty$, $PDF(t) \to Normal$. Which is defined (in such elegance) as:
 
-&nbsp;
-
-Which is defined (in such elegance) as:
-
-&nbsp;
-
-$P(t|x,v)= \frac{ \Gamma\left( \frac{v+1}{2}\right)}{\sqrt{v\pi}\Gamma\left( \frac{v}{2}\right)} \left( 1 + \frac{x^2}{v}\right)^{-\frac{v+1}{2}}$
+$$
+P(t|x,v)= \frac{ \Gamma\left( \frac{v+1}{2}\right)}{\sqrt{v\pi}\Gamma\left( \frac{v}{2}\right)} \left( 1 + \frac{x^2}{v}\right)^{-\frac{v+1}{2}}
+$$
 
 
+where:
+
+- $x$ is the value of the $t$ statistic,
+- $v$ is the degrees of freedom ($df = N - 1$ for a one-sample test), and
+- $\Gamma$ is the Gamma function, which extends the factorial to non-integers ($\Gamma(n) = (n-1)!$ for whole numbers).
 
 
-## Rejection Regions
-:::: {.columns}
-
-::: {.column width="50%"}
 
 
-Two Tailed Test: $H_A: \mu \ne c$
+## $H_O: \mu = c$
 
-One Tailed Test: $H_A: \mu \lt c$
-
-One Tailed Test: $H_A: \mu \gt c$
-
-:::
-
-::: {.column width="50%"}
-```{r echo=FALSE}
-d1 <- data.frame(t=c( seq(-5,-2.064, by=0.02), -2.064, -5), 
-                 f=c( dt( seq(-5,-2.064, by=0.02),df=1), 0.01224269, 0.01224269))
-d2 <- data.frame(t=c( seq(2.064,5,by=0.02), 5, 2.064),
-                 f=c( dt( seq( 2.064, 5, by=0.02),df=1), 0.01224269, 0.01224269))
-d3 <- data.frame( x=c(2.5,-2.5), y=0.02719, label="2.5%")
-ggplot() + 
-  geom_polygon(aes(t,f),data=d1, fill="#F8766D",alpha=0.5,color="#F8766D") + 
-  geom_polygon(aes(t,f),data=d2, fill="#F8766D",alpha=0.5,color="#F8766D") + 
-  geom_line( aes(t,f),data=d[d$df==1,], color="#F8766D") + 
-  geom_text( aes(x,y,label=label),data=d3)
+```{r}
+#| echo: false
+nu <- 24
+d.t <- data.frame( t = x, f = dt( x, df = nu ) )
+t_two <- qt( 0.975, df = nu )
+t_one <- qt( 0.95, df = nu )
+ggplot( d.t, aes(x = t, y = f) ) + 
+  geom_area( data = d.t[ d.t$t <= -t_two, ], fill = "#F8766D", alpha = 0.5 ) + 
+  geom_area( data = d.t[ d.t$t >=  t_two, ], fill = "#F8766D", alpha = 0.5 ) + 
+  geom_line() + 
+  annotate( "text", x = c(-3, 3), y = 0.05, label = "2.5%" ) + 
+  labs( x = "t", y = "Density",
+        caption = sprintf( "df = %d; reject if t < %.3f or t > %.3f", nu, -t_two, t_two ) )
 ```
-:::
 
-::::
+Two-tailed: reject $H_O$ if $\bar{x}$ is far from $c$ in *either* direction.
+
+
+## $H_O: \mu \ge c$
+
+```{r}
+#| echo: false
+ggplot( d.t, aes(x = t, y = f) ) + 
+  geom_area( data = d.t[ d.t$t <= -t_one, ], fill = "#F8766D", alpha = 0.5 ) + 
+  geom_line() + 
+  annotate( "text", x = -2.9, y = 0.05, label = "5%" ) + 
+  labs( x = "t", y = "Density",
+        caption = sprintf( "df = %d; reject if t < %.3f", nu, -t_one ) )
+```
+
+One-tailed: reject $H_O$ only if $\bar{x}$ is far *below* $c$.
+
+
+## $H_O: \mu \le c$
+
+```{r}
+#| echo: false
+ggplot( d.t, aes(x = t, y = f) ) + 
+  geom_area( data = d.t[ d.t$t >= t_one, ], fill = "#F8766D", alpha = 0.5 ) + 
+  geom_line() + 
+  annotate( "text", x = 2.9, y = 0.05, label = "5%" ) + 
+  labs( x = "t", y = "Density",
+        caption = sprintf( "df = %d; reject if t > %.3f", nu, t_one ) )
+```
+
+One-tailed: reject $H_O$ only if $\bar{x}$ is far *above* $c$.
 
 
 
@@ -304,7 +335,7 @@ t.test( x, y )
 
 ## Paired t-tests
 
-If the data are collected in a way that there is supposed to be a *connection* between the values of `x` and `y` (e.g., looking at fluctuating asymeetry in wing shape in individual birds where left wing = right wing), you could instead treat the two data as:
+If the data are collected in a way that there is supposed to be a *connection* between the values of `x` and `y` (e.g., looking at fluctuating asymmetry in wing shape in individual birds where left wing = right wing), you could instead treat the two data as:
 
 $H_O: \mu_{x} -  \mu_{y} = 0.0$
 
@@ -394,7 +425,7 @@ $1 - (1-0.05)^3 \approx 0.1426$
 
 ## Multiple Testing Problem
 
-If we test all three pairs of tests for the *Iris* data, what mean that we are expecting, 
+If we test all three pairs of tests for the *Iris* data, we are expecting, 
 
 &nbsp;
 
@@ -421,7 +452,7 @@ ggplot( iris, aes(x=Species, y=Sepal.Length)) +
   ylab("Sepal Length") 
 ```
 
-$y_{ij} = \mu + \tau_i + \epsilon_j$
+$y_{ij} = \mu + \tau_i + \epsilon_{ij}$
 
 
 
@@ -438,7 +469,7 @@ ggplot( iris, aes(x=Species, y=Sepal.Length)) +
   ylab("Sepal Length") 
 ```
 
-$y_{ij} = \mu + \tau_i + \epsilon_j$
+$y_{ij} = \mu + \tau_i + \epsilon_{ij}$
 
 
 
@@ -454,20 +485,20 @@ ggplot( iris, aes(x=Species, y=Sepal.Length)) +
   ylab("Sepal Length") 
 ```
 
-$y_{ij} = \mu + \tau_i + \epsilon_j$
+$y_{ij} = \mu + \tau_i + \epsilon_{ij}$
 
 
 
 ## A Linear Model Approach {.scrollable}
 
 
-$y_{ij} = \mu + \tau_i + \epsilon_j$
+$y_{ij} = \mu + \tau_i + \epsilon_{ij}$
 
 where:   
 
 - $\mu$ is the overall mean of all the data.  
 - $\tau_i$ is the deviation of the $i^{th}$ treatment level from the overall mean.  
-- $\epsilon_j$ is the deviation of the observation from the treatment mean.
+- $\epsilon_{ij}$ is the deviation of the $j^{th}$ observation from the mean of treatment $i$.
 
 
 
@@ -486,7 +517,7 @@ The Analysis of Variance Table for Testing the Null Hypothesis $H_O: \tau_i = 0$
 Source  | df    | SS                                                                 | MS
 ----|---|----------------------------------------------------------------|------------------------------------------------
 Among   | $K-1$ | $\sum_{i=1}^K N_i \left( \bar{x}_i - \bar{x} \right)^2$            | $\frac{SS_A}{K-1}$
-Within  | $N-K$ | $\sum_{i=1}^Kn_i\left( \sum_{j=1}^{N_i}(x_{ij}-\bar{x}_i)^2 \right)$ | $\frac{SS_W}{N-K}$
+Within  | $N-K$ | $\sum_{i=1}^K \left( \sum_{j=1}^{N_i}(x_{ij}-\bar{x}_i)^2 \right)$ | $\frac{SS_W}{N-K}$
 Total   | $N-1$ | $\sum_{i=1}^K \sum_{j=1}^{N_i} (x_{ij} - \bar{x})^2$               | 
 
 
@@ -561,9 +592,10 @@ tuk
 
 The difference is: 
 
-$q = \frac{\bar{y}_{max} - \bar{y}_{min}}{\sigma \sqrt{2/N}}$
+$q = \frac{\bar{y}_{max} - \bar{y}_{min}}{\sqrt{MS_W / n}}$
 
-and the confidence intervals are based upon Student-ized confidence ranges.
+where $n$ is the number of observations in each group,
+and the confidence intervals are based upon the Studentized range distribution.
 
 
 
@@ -590,31 +622,37 @@ plot( tuk, xlim=c(-1,2) )
 
 ## Analysis with 2 Predictors.
 
-There are times when we have more than on treatment category for a response.  For example, a growth experiment may have a treatment that is high light and low light as well as one that has fewer than normal, normal, and more than normal nutrients.  These are called *2-factor Analysis of Variance*.
+There are times when we have more than one treatment category for a response.  For example, a growth experiment may have a treatment that is high light and low light as well as one that has fewer than normal, normal, and more than normal nutrients.  These are called *2-factor Analysis of Variance*.
 
 - Each factor can be considered independently.
-- The interaction between factors can be exmained as well.
+- The interaction between factors can be examined as well.
 
 ## Specifying A Two Factor Model
 
-Here i'm going to use a new data set because there is only one categorical variable in the *iris* data used above.  Here is the old *Motor Trend Cars* dataset
+Here I'm going to use a new data set because there is only one categorical variable in the *iris* data used above.  Here is the old *Motor Trend Cars* dataset
 
 ```{r}
 df <- mtcars
 summary( df )
 ```
 
-## Quarter Mile Speed ~ Engine Type & Transmission
+## Speed ~ Engine Type & Transmission
+
+I'm renaming here for brevity in the plot labels.
+
 
 ```{r}
 df |> 
-  mutate( Engine = factor( ifelse( vs == 0, "V-Shaped", "Straight") ),
-          Transmission = factor( ifelse( am == 0, "Automatic","Manual")) ) |>
+  mutate( Engine = factor( ifelse( vs == 0, "V", "Straight") ),
+          Transmission = factor( ifelse( am == 0, "Auto","Manual")) ) |>
   select( Time = qsec, Engine, Transmission) -> df 
 summary( df )
 ```
 
 ## One Factor Analyses: Engine
+
+
+
 
 
 ```{r}
@@ -657,6 +695,7 @@ plot( TukeyHSD( fit.both, "Transmission"))
 ## &nbsp;
 
 ```{r}
+par( mar = c(4, 13, 2, 1), las = 1 )  # wide left margin, horizontal labels
 plot( TukeyHSD( fit.both, "Engine:Transmission"))
 ```
 

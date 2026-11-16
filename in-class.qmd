@@ -1,12 +1,95 @@
 ---
 title: "In Class Activity - Analysis of Variance"
-author: "YOUR NAME HERE"
-execute:
-  echo: true
 format: dyerlab-html
 ---
 
+In the slides we used the *Motor Trend Cars* data (`mtcars`) to ask whether quarter-mile time depends upon engine shape and transmission. Today we stay with those cars but change the question to fuel economy. The comments in each chunk lay out the steps; fill in the code beneath them, and answer the questions in your own words.
+
 ```{r}
-data( mtcars )
+#| message: false
+library( tidyverse )
 ```
 
+::: {.callout-note}
+## From here on: documents that read like research
+
+As in the Regression homework, the homework you turn in hides its code. Its header adds
+
+```yaml
+execute:
+  echo: false
+```
+
+so the rendered page shows only your words, tables, figures, and inline values, the way a published paper would. The code still runs and is still in the file; the "</> Code" button lets me see all of it. This activity keeps its code visible because you work from it directly, but as you answer the questions, start writing the explanation so it stands on its own without the code beside it.
+:::
+
+## The Data
+
+`mtcars` is built into R. It has 32 cars, and the three columns we need are `mpg` (miles per gallon), `cyl` (the number of cylinders: 4, 6, or 8), and `am` (the transmission: `0` is automatic and `1` is manual).
+
+```{r}
+data( mtcars )
+head( mtcars )
+```
+
+## The Question
+
+> Does fuel economy differ among cars with different numbers of cylinders, and does the transmission change that answer?
+
+We will work through this together.
+
+1. Make a `data.frame` named `cars` with three columns: `MPG` (from `mpg`), `Cylinders` (`cyl` as a `factor`), and `Transmission` (a `factor` with the levels `Automatic` and `Manual` rather than `0` and `1`). Use `summary()` to check that both factors look right.
+
+```{r}
+# Your code here
+
+```
+
+2. Plot `MPG` for each number of `Cylinders` (a box plot with the points jittered on top works well). Before running any test, what do you expect the answer to be?
+
+```{r}
+# Your code here
+
+```
+
+3. With three cylinder groups there are three pairs of means. If we tested each pair with its own $t$-test at $\alpha = 0.05$, what is the chance of at least one false positive even if all three means were truly equal? Calculate it in R.
+
+```{r}
+# Your code here
+
+```
+
+4. Write out the null hypothesis for a one-way analysis of variance on these data. Then fit it with `aov()`, assign it to `fit.cyl`, and look at the ANOVA table. Report the $F$ statistic, both of its degrees of freedom, and the $P$-value. Where do those two degrees of freedom come from?
+
+```{r}
+# Your code here
+
+```
+
+5. How much of the variation in fuel economy does the number of cylinders explain? Calculate $R^2$ from the `Sum Sq` column of the ANOVA table.
+
+```{r}
+# Your code here
+
+```
+
+6. The ANOVA says *at least one* mean differs. Use `TukeyHSD()` (and `plot()` it) to find out which. Which pairs of cylinder groups are different, and by roughly how many miles per gallon?
+
+```{r}
+# Your code here
+
+```
+
+7. Now add the transmission. Fit a two-factor model with both factors and their interaction, assign it to `fit.both`, and look at the ANOVA table. Which terms are significant?
+
+```{r}
+# Your code here
+
+```
+
+8. Calculate the mean `MPG` for every combination of `Cylinders` and `Transmission` with `group_by()` and `summarize()`, include the number of cars in each combination (`n()`), and plot the means with one line per transmission. Are the lines parallel? Given the number of cars in each combination, why might the interaction term not be significant even though the lines are not parallel?
+
+```{r}
+# Your code here
+
+```

@@ -1,0 +1,97 @@
+---
+title: "In Class Activity - Analysis of Variance (Key)"
+format: dyerlab-html
+---
+
+```{r}
+#| message: false
+library( tidyverse )
+data( mtcars )
+```
+
+## The Question
+
+> Does fuel economy differ among cars with different numbers of cylinders, and does the transmission change that answer?
+
+1. Build the data.
+
+```{r}
+cars <- data.frame( MPG = mtcars$mpg,
+                    Cylinders = factor( mtcars$cyl ),
+                    Transmission = factor( ifelse( mtcars$am == 0, "Automatic", "Manual" ) ) )
+summary( cars )
+```
+
+2. Plot.
+
+```{r}
+ggplot( cars, aes(x = Cylinders, y = MPG) ) +
+  geom_boxplot( outlier.shape = NA ) +
+  geom_jitter( width = 0.15, alpha = 0.6 ) +
+  ylab( "Fuel Economy (MPG)" )
+```
+
+Fuel economy drops steadily as the number of cylinders goes up, and the boxes barely overlap, so we should expect to reject the null hypothesis.
+
+3. Familywise false-positive rate for three tests.
+
+```{r}
+p.any <- 1 - (1 - 0.05)^3
+p.any
+```
+
+About `r format( 100 * p.any, digits = 3 )`%, nearly three times the 5% we think we are testing at.
+
+4. One-way ANOVA. $H_O: \mu_4 = \mu_6 = \mu_8$ (equivalently, $\tau_i = 0$ for every cylinder group).
+
+```{r}
+fit.cyl <- aov( MPG ~ Cylinders, data = cars )
+tab.cyl <- anova( fit.cyl )
+tab.cyl
+```
+
+$F =$ `r format( tab.cyl$"F value"[1], digits = 3 )` with `r tab.cyl$Df[1]` and `r tab.cyl$Df[2]` degrees of freedom ($P =$ `r format( tab.cyl$"Pr(>F)"[1], digits = 2 )`), so we reject $H_O$. The first $df$ is $K - 1$ (3 groups − 1) and the second is $N - K$ (32 cars − 3 groups).
+
+5. Variance explained.
+
+```{r}
+r2.cyl <- tab.cyl$`Sum Sq`[1] / sum( tab.cyl$`Sum Sq` )
+r2.cyl
+```
+
+The number of cylinders explains `r format( 100 * r2.cyl, digits = 3 )`% of the variation in fuel economy.
+
+6. Post-hoc.
+
+```{r}
+tuk.cyl <- TukeyHSD( fit.cyl )
+tuk.cyl
+plot( tuk.cyl )
+```
+
+All three pairs differ (none of the intervals cross zero). Six-cylinder cars get about 7 MPG less than four-cylinder cars, eight-cylinder cars about 11.6 MPG less than four-cylinder cars, and eight-cylinder cars about 4.6 MPG less than six-cylinder cars.
+
+7. Two-factor model.
+
+```{r}
+fit.both <- aov( MPG ~ Cylinders * Transmission, data = cars )
+anova( fit.both )
+```
+
+Only `Cylinders` is significant. `Transmission` is marginal ($P \approx 0.056$) and the interaction is not significant.
+
+8. Cell means and the interaction plot.
+
+```{r}
+cars |>
+  group_by( Cylinders, Transmission ) |>
+  summarize( MPG = mean( MPG ), N = n(), .groups = "drop" ) -> cell.means
+cell.means
+
+ggplot( cell.means, aes(x = Cylinders, y = MPG, color = Transmission, group = Transmission) ) +
+  geom_point( size = 3 ) +
+  geom_line() +
+  ylab( "Mean Fuel Economy (MPG)" )
+```
+
+The lines are not parallel: manual transmissions add about 5 MPG to four-cylinder cars but almost nothing to eight-cylinder cars. The interaction is still not significant because the design is very unbalanced and some combinations are tiny (only 2 manual eight-cylinder cars and 3 automatic four-cylinder cars), so those cell means are estimated with a lot of uncertainty. A non-significant interaction is not evidence that the lines are parallel; with 32 cars we just do not have the power to tell.

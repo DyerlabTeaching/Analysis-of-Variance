@@ -7,7 +7,7 @@ format: dyerlab-narrative-html
 
 ![](media/module_image.jpg){fig-alt="A milkweed beetle on a plant."}
 
-> Here we explore methods applicable to testing hypotheses about specific parameters, as equal to a specified value (a $t$-test), equal between two samples (paired $t$-tests), and equal among more than two groups (analysis of variance).
+> Here we explore methods applicable to testing hypotheses about specific parameters, as equal to a specified value (a $t$-test), equal between two samples (two-sample and paired $t$-tests), and equal among more than two groups (analysis of variance).
 
 <!-- END module:header -->
 
@@ -16,15 +16,15 @@ library( ggplot2 )
 theme_set( theme_bw(base_size = 14) )
 ```
 
-In this and the next section, we will examine how to tell the difference between measures of central tendency.  This is applied to a single set of data, pairs of data sets, and a data set with many different groups. As we increase the complexity of these hypotheses, we will move through a series of statistical tests, starting with a one-sample $t$-test, a paired $t$-test, and then to the general analysis of variance (ANOVA) approaches.  All of these methods evaluate the equality of mean values.
+In this module, we will examine how to tell the difference between measures of central tendency.  This is applied to a single set of data, pairs of data sets, and a data set with many different groups. As we increase the complexity of these hypotheses, we will move through a series of statistical tests, starting with a one-sample $t$-test, then two-sample (and paired) $t$-tests, and then to the general analysis of variance (ANOVA) approaches, including models with two factors.  All of these methods evaluate the equality of mean values.
 
 ## One Sample Hypotheses {.theory .application}
 
-At the most basic level, we can take a set of data and test to see if the mean of those values is equated to some particular value, $H_O: \mu = x$ (or $H_O: \mu = 0$ in some cases).  The idea here is to determine, by specifying a value for the null hypothesis, what we expect the mean value to be equal to.  Going back to our idea of hypothesis testing, the null hypothesis is the thing we are trying to disprove (with some level of statistical confidence) and in doing so we need to define <mark>a test statistic that we have an idea about its behavior</mark>.  In this case, we will define Student's $t$-test statistic as:
+At the most basic level, we can take a set of data and test to see if the mean of those values is equated to some particular value, $H_O: \mu = x$ (or $H_O: \mu = 0$ in some cases).  The idea here is to determine, by specifying a value for the null hypothesis, what we expect the mean value to be equal to.  Going back to our idea of hypothesis testing, the null hypothesis is the thing we are trying to disprove (with some level of statistical confidence) and in doing so we need to define a test statistic whose behavior we understand.  In this case, we will define Student's $t$-test statistic as:
 
 $t =\frac{\bar{x}-\mu}{s_{\bar{x}}}$
 
-where $\bar{x}$ is the observed mean of the data, $\mu$ is the mean value specified under the null hypothesis, and $s_{\bar{x}}$ is the standard deviation of the data.  The value of the $t$-statistic can be defined based upon the sample size (e.g., the degrees of freedom, $df$).  Here is what the probability density function looks like for $df = (1,3,\infty)$.
+where $\bar{x}$ is the observed mean of the data, $\mu$ is the mean value specified under the null hypothesis, and $s_{\bar{x}}$ is the standard error of the mean (the standard deviation of the data divided by the square root of the sample size, $s_{\bar{x}} = \frac{s}{\sqrt{N}}$).  The value of the $t$-statistic can be defined based upon the sample size (e.g., the degrees of freedom, $df$).  Here is what the probability density function looks like for $df = (1,3,\infty)$.
 
 ```{r}
 library( ggplot2 )
@@ -45,20 +45,20 @@ $P(t|x,v)= \frac{ \Gamma\left( \frac{v+1}{2}\right)}{\sqrt{v\pi}\Gamma\left( \fr
 
 where $\Gamma$ is the Gamma function.  Not pretty!  Fortunately, we have some built-in facilities in R that can make it easy for us.  
 
-For a single set of data, we can use the function above to estimate a value of the $t$ statistic.  The probability distribution, defined by the degrees of freedom, identifies regions within which we may suspect the statistic to be abnormally large.  In our case, though it is quite arbitrary, we can define either one or two regions of the distribution whose values would be extreme enough such that we would consider a significant deviation.  For a two-tailed test, the distribution below illustrates this concept.  If the estimated value of the $t$ statistic is in either of the shaded regions, we would reject the null hypothesis of $H_O: \mu = 0$ where $\alpha=0.05$.  
+For a single set of data, we can use the function above to estimate a value of the $t$ statistic.  The probability distribution, defined by the degrees of freedom, identifies regions within which we may suspect the statistic to be abnormally large.  In our case, though it is quite arbitrary, we can define either one or two regions of the distribution whose values would be extreme enough such that we would consider a significant deviation.  For a two-tailed test, the distribution below illustrates this concept.  If the estimated value of the $t$ statistic is in either of the shaded regions, we would reject the null hypothesis of $H_O: \mu = 0$ where $\alpha=0.05$.  This example uses $df = 24$.  
 
 ```{r}
-d1 <- data.frame(t=c( seq(-5,-2.064, by=0.02), -2.064, -5), 
-                 f=c( dt( seq(-5,-2.064, by=0.02),df=1), 0.01224269, 0.01224269))
-d2 <- data.frame(t=c( seq(2.064,5,by=0.02), 5, 2.064),
-                 f=c( dt( seq( 2.064, 5, by=0.02),df=1), 0.01224269, 0.01224269))
-d3 <- data.frame( x=c(2.5,-2.5), y=0.02719, label="2.5%")
-ggplot() + 
-  geom_polygon(aes(t,f),data=d1, fill="#F8766D",alpha=0.5,color="#F8766D") + 
-  geom_polygon(aes(t,f),data=d2, fill="#F8766D",alpha=0.5,color="#F8766D") + 
-  geom_line( aes(t,f),data=d[d$df==1,], color="#F8766D") + 
-  geom_text( aes(x,y,label=label),data=d3)
+nu <- 24
+t_crit <- qt( 0.975, df = nu )
+d.t <- data.frame( t = x, f = dt( x, df = nu ) )
+ggplot( d.t, aes(x = t, y = f) ) + 
+  geom_area( data = d.t[ d.t$t <= -t_crit, ], fill = "#F8766D", alpha = 0.5 ) + 
+  geom_area( data = d.t[ d.t$t >=  t_crit, ], fill = "#F8766D", alpha = 0.5 ) + 
+  geom_line() + 
+  annotate( "text", x = c(-3, 3), y = 0.05, label = "2.5%" )
 ```
+
+For $df = 24$, the critical values are $t = \pm$ `r format( t_crit, digits=4 )`.  With fewer degrees of freedom the tails are heavier and the critical values move farther from zero (for $df = 1$ they are $\pm$ `r format( qt( 0.975, df = 1 ), digits=3 )`).
 
 In R, we can use the `t.test()` function.  I'm going to go back to the *Iris* data set and use that as it has three categories (the species) and many measurements on sepals and petals.  Here I separate the species into their own `data.frame` objects.
 
@@ -99,7 +99,7 @@ In all the output, we are also given an estimate of the Confidence Interval arou
 
 $\bar{x} - t_{\alpha, df} s_{\bar{x}} < \mu < \bar{x} + t_{\alpha, df} s_{\bar{x}}$
 
-or the mean plus or minus standard deviation of the data times the value of the $t$-statistic for a given level of $\alpha$ and $df$.
+or the mean plus or minus the standard error of the mean times the critical value of the $t$ distribution for a given level of $\alpha$ and $df$.
 
 ### Data Variability
 
@@ -143,9 +143,9 @@ Under this hypothesis, we can use a *t*-test like before but just rearranged as:
 
 $t = \frac{\bar{x}_1 - \bar{x}_2}{s_{\bar{x}_1-\bar{x}_2}}$
 
-As before, if the difference in the numerator is small we would reject but here we need to standardize the differences in the means by a measure of the standard deviation that is based upon both sets of data.  This is called the *standard error of the difference in two means* (real catchy title, no?).  This is defined as:
+As before, if the difference in the numerator is large relative to its standard error we would reject, but here we need to standardize the differences in the means by a measure of the standard deviation that is based upon both sets of data.  This is called the *standard error of the difference in two means* (real catchy title, no?).  This is defined as:
 
-<mark>$s_{\bar{x}_1-\bar{x}_2} = \sqrt{ \frac{s_1^2}{N_1}+\frac{s_2^2}{N}}$</mark>
+$s_{\bar{x}_1-\bar{x}_2} = \sqrt{ \frac{s_1^2}{N_1}+\frac{s_2^2}{N_2}}$
 
 To test this, we use the same approach as before but instead of defining $\mu = 6.0$ in the `t.test()` function, we instead give it both data sets.
 
@@ -155,9 +155,35 @@ t.test( x=df.vi$Sepal.Length, y = df.ve$Sepal.Length )
 
 Here we get a few bits of new information from the analysis.  It is obvious that we would reject the null hypothesis given the magnitude of the estimated $P$-value.  The output also provides us an estimate of the mean values for each group as well as the confidence around the difference in the mean values.  This confidence interval does not overlap 0.0, as it shouldn't if we reject $H_O: \mu_X = \mu_Y$.
 
+By default, `t.test()` performs *Welch's* $t$-test, which uses the standard error above and does not assume the two groups have the same variance (that is why the degrees of freedom in the output are not a whole number).  If you have reason to believe the variances are equal, `var.equal = TRUE` gives the classic pooled-variance version.
+
+### Paired Samples
+
+The test above treats the two samples as independent; any observation in one group has nothing to do with any particular observation in the other.  Sometimes, though, the data come in natural pairs: the same individual measured before and after a treatment, the left and right wing of the same bird, or upstream and downstream samples from the same stream.  For paired data, the question is whether the *differences* within each pair are, on average, zero:
+
+$H_O: \mu_{x - y} = 0$
+
+which is just a one-sample $t$-test on the differences.  The built-in `sleep` data set records the extra hours of sleep for the same 10 patients under each of two drugs, so each patient forms a pair.
+
+```{r}
+drug1 <- sleep$extra[ sleep$group == 1 ]
+drug2 <- sleep$extra[ sleep$group == 2 ]
+fit.paired <- t.test( drug1, drug2, paired = TRUE )
+fit.paired
+```
+
+If we (incorrectly) ignore the pairing and treat these as independent samples, we get a very different answer.
+
+```{r}
+fit.unpaired <- t.test( drug1, drug2 )
+fit.unpaired
+```
+
+The paired test rejects the null hypothesis ($P =$ `r format( fit.paired$p.value, digits=2 )`) whereas the unpaired test does not ($P =$ `r format( fit.unpaired$p.value, digits=2 )`).  Patients differ a lot in how much they sleep, and the unpaired test lumps that among-patient variation in with the drug effect.  Pairing removes it.  The pairing has to come from how the data were collected, though; you cannot pair observations after the fact just because it gives a smaller $P$-value.
+
 ## Many Sample Hypotheses {.theory .application}
 
-If we have more than two samples, we could do a bunch of paired $t$-test statistics but this is not the best idea.  In fact, if we do this to our data, each time testing at a confidence level of, say,  $\alpha = 0.05$, then for each time we test at $0.05$ but over all pairs, we test at an overall level of $0.05^k$ (where $k$ is the number of tests).  We cannot do multiple tests without penalizing ourselves in terms of the level at which we consider something significant if we are going to do all these tests.  You may have heard about a Bonferroni correction---this does exactly that, it allows us to modify the $\alpha$ level we use to take into consideration the number of tests we are going to use.  While this may be an acceptable way to test for the equality of several means (and it may not actually be if you ask most statisticians), there is another way that is much easier.  
+If we have more than two samples, we could do a bunch of pairwise $t$-tests but this is not the best idea.  In fact, if we do this to our data, each time testing at, say, $\alpha = 0.05$, then each individual test has a 5% chance of a false positive, but the chance of at least one false positive across all $k$ tests is $1-(1-0.05)^k$ (about 14% for the three pairs of *Iris* species).  Rejecting a null hypothesis that is actually true is called a *Type I error* (a false positive), and for any single test it happens with probability $\alpha$.  Failing to reject a null hypothesis that is actually false is a *Type II error* (a false negative).  We cannot do multiple tests without penalizing ourselves in terms of the level at which we consider something significant if we are going to do all these tests.  You may have heard about a Bonferroni correction---this does exactly that, it allows us to modify the $\alpha$ level we use to take into consideration the number of tests we are going to use.  While this may be an acceptable way to test for the equality of several means (and it may not actually be if you ask most statisticians), there is another way that is much easier.  
 
 Consider the case where we have many categories (e.g., factors in R) that we are interested in determining if the mean of all are equal.  The null hypothesis for this is, $H_O: \mu_1 = \mu_2 = \ldots = \mu_k$, where there are $k$ different treatment levels.  This is essentially what we'd want to do by doing a bunch of $t$-tests but we can use another approach that we don't have to penalize ourselves for multiple tests.  Here is how it works.
 
@@ -200,14 +226,14 @@ If we look at all these values, we can create the venerable ANOVA table with Amo
 Source  | df    | SS                                                                 | MS
 --------|-------|--------------------------------------------------------------------|------------------------------------------------
 Among   | $K-1$ | $\sum_{i=1}^K N_i \left( \bar{x}_i - \bar{x} \right)^2$            | $\frac{SS_A}{K-1}$
-Within  | $N-K$ | $\sum_{i=1}^Kn_i\left( \sum_{j=1}^{N_i}(x_{ij}-\bar{x}_i)^2 \right)$ | $\frac{SS_W}{N-K}$
+Within  | $N-K$ | $\sum_{i=1}^K \left( \sum_{j=1}^{N_i}(x_{ij}-\bar{x}_i)^2 \right)$ | $\frac{SS_W}{N-K}$
 Total   | $N-1$ | $\sum_{i=1}^K \sum_{j=1}^{N_i} (x_{ij} - \bar{x})^2$               | 
 
 In R, we can evaluate the equality of means by partitioning our data as depicted above.  Essentially, if at least one of our treatment means deviates significantly, then the $MS_A$ will be abnormally large relative to the variation within each treatment $MS_W$.  This gives us a statistic, defined by the American statistician Snedecor as:
 
 $F = \frac{MS_A}{MS_W}$
 
-<mark>as an homage to Ronald Fisher (the F-statistic) has a pretty well understood distribution under a few conditions.</mark>  This statistic has an expectation of:
+Snedecor named it $F$ as an homage to Ronald Fisher.  The $F$-statistic has a well-understood distribution when a few conditions hold: the observations are independent, and the residuals are normally distributed with equal variance in each treatment.  Under the null hypothesis, $F$ follows the $F$ distribution, whose density is:
 
 $f(x | df_A, df_W) = \frac{\sqrt{\frac{(df_Ax)^{df_A}df_W^{df_W}}{(df_Ax + df_W)^{df_W+df_A}}}}{x\mathbf{B}\left( \frac{df_A}{2}, \frac{df_W}{2} \right)}$
 
@@ -226,7 +252,23 @@ The function called here, `aov()` is the one that does the Analysis of Variance.
 anova(fit.aov)
 ```
 
-which shows that the "Species" treatment groups are significantly different from each other, with an $F$ statistic equal to $F = 119.3$, which with 2 and 147 degrees of freedom is assigned a probability equal to $2e^{-16}$, a very small value!  
+which shows that the "Species" treatment groups are significantly different from each other, with an $F$ statistic equal to $F = 119.3$, which with 2 and 147 degrees of freedom is assigned a probability less than $2 \times 10^{-16}$ (which R prints as `< 2e-16`), a very small value!  
+
+### Variance Explained
+
+Unlike `summary()` of an `lm()` model, the ANOVA table does not report an $R^2$ directly, but we can get it from the sums of squares.  The fraction of the total variation that is explained by the treatment is
+
+$R^2 = \frac{SS_{Among}}{SS_{Total}}$
+
+The `anova()` function returns a table whose `Sum Sq` column holds the sums of squares for each row (the treatment first, the residuals, i.e. $SS_{Within}$, last), and since $SS_{Total} = SS_{Among} + SS_{Within}$, the total is just the sum of that column.
+
+```{r}
+tab.aov <- anova( fit.aov )
+r2 <- tab.aov$`Sum Sq`[1] / sum( tab.aov$`Sum Sq` )
+r2
+```
+
+So species identity explains `r format( 100 * r2, digits=3 )`% of the variation in sepal length.
 
 ### Post-Hoc Tests
 
@@ -239,10 +281,60 @@ tuk <- TukeyHSD(fit.aov)
 tuk
 ```
 
-which breaks down the pair-wise differences in the mean of each treatment.  Here we see the magnitude of the differences in mean values, the lower and upper confidence on the differences, and the probability associated with these differences.  In this example, all three comparisons are highly unlikely (e.g., $P$ is very small and in this case essentially zero).  As a result, <mark>we can interpret these results as suggesting that each of the three species have significantly different.</mark>  If we plot these results, we see which ones are larger and which are smaller. 
+which breaks down the pair-wise differences in the mean of each treatment.  Here we see the magnitude of the differences in mean values, the lower and upper confidence on the differences, and the probability associated with these differences.  In this example, all three comparisons are highly unlikely (e.g., $P$ is very small and in this case essentially zero).  As a result, we can interpret these results as suggesting that each of the three species has a significantly different mean sepal length.  If we plot these results, we see which ones are larger and which are smaller. 
 
 ```{r}
 plot( tuk )
 ```
 
 Which shows the difference between treatment mean between all pairs of treatments.  Overall, we see that the *Iris* species are all significantly different.
+
+## Two-Factor Models {.theory .application}
+
+There are times when we have more than one treatment category for a response.  For example, a growth experiment may have a light treatment (high and low light) as well as a nutrient treatment (fewer than normal, normal, and more than normal nutrients).  These are called *two-factor* analyses of variance, and they let us ask three questions at once:
+
+- Does the first factor influence the response?
+- Does the second factor influence the response?
+- Is there an *interaction*, where the effect of one factor depends upon the level of the other?
+
+The underlying linear model extends the one-factor version by adding a term for each factor and one for their interaction:
+
+$y_{ijk} = \mu + \alpha_i + \beta_j + (\alpha\beta)_{ij} + \epsilon_{ijk}$
+
+where $\alpha_i$ is the effect of the $i^{th}$ level of the first factor, $\beta_j$ is the effect of the $j^{th}$ level of the second factor, $(\alpha\beta)_{ij}$ is the interaction, and $\epsilon_{ijk}$ is the deviation of each observation from its treatment-combination mean.  Each of these terms gets its own row (and its own $F$ test) in the ANOVA table.
+
+The *Iris* data have only one categorical variable, so here we will use the *Motor Trend Cars* data (`mtcars`) and ask whether the quarter-mile time of a car depends upon its engine shape and its transmission type.
+
+```{r}
+cars <- data.frame( Time = mtcars$qsec,
+                    Engine = factor( ifelse( mtcars$vs == 0, "V", "Straight" ) ),
+                    Transmission = factor( ifelse( mtcars$am == 0, "Auto", "Manual" ) ) )
+summary( cars )
+```
+
+In the model formula, `Engine * Transmission` is shorthand for `Engine + Transmission + Engine:Transmission`; both factors **and** their interaction.
+
+```{r}
+fit.both <- aov( Time ~ Engine * Transmission, data = cars )
+anova( fit.both )
+```
+
+Both engine shape and transmission type have a significant effect on quarter-mile time, but the interaction term does not.  The easiest way to see what an interaction would look like is to plot the mean of each treatment combination.
+
+```{r}
+cell.means <- aggregate( Time ~ Engine + Transmission, data = cars, FUN = mean )
+ggplot( cell.means, aes(x = Transmission, y = Time, color = Engine, group = Engine) ) + 
+  geom_point( size = 3 ) + 
+  geom_line() + 
+  ylab( "Quarter-Mile Time (s)" )
+```
+
+The two lines are nearly parallel: straight engines are slower by roughly the same amount whether the transmission is automatic or manual.  That is what *no interaction* looks like.  If the lines had different slopes (or crossed), the effect of transmission would depend upon the engine, and the interaction term would be significant.
+
+The `TukeyHSD()` function works on two-factor models too; the `which` argument picks the term whose pairwise differences you want.
+
+```{r}
+TukeyHSD( fit.both, which = "Engine" )
+```
+
+One caution: these data are not *balanced* (there are different numbers of cars in each treatment combination).  With unbalanced data, `anova()` adds the terms in the order they appear in the formula, so the sums of squares for a factor can change a little if you list the factors in a different order.  With a balanced design, the order does not matter.

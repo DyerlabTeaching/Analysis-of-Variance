@@ -133,15 +133,15 @@ window.Quarto = {
 <!-- BEGIN module:header — generated from module.yml; edit that, not this -->
 <p><img src="media/module_image.jpg" class="img-fluid" alt="A milkweed beetle on a plant."></p>
 <blockquote class="blockquote">
-<p>Here we explore methods applicable to testing hypotheses about specific parameters, as equal to a specified value (a <span class="math inline">\(t\)</span>-test), equal between two samples (paired <span class="math inline">\(t\)</span>-tests), and equal among more than two groups (analysis of variance).</p>
+<p>Here we explore methods applicable to testing hypotheses about specific parameters, as equal to a specified value (a <span class="math inline">\(t\)</span>-test), equal between two samples (two-sample and paired <span class="math inline">\(t\)</span>-tests), and equal among more than two groups (analysis of variance).</p>
 </blockquote>
 <!-- END module:header -->
-<p>In this and the next section, we will examine how to tell the difference between measures of central tendency. This is applied to a single set of data, pairs of data sets, and a data set with many different groups. As we increase the complexity of these hypotheses, we will move through a series of statistical tests, starting with a one-sample <span class="math inline">\(t\)</span>-test, a paired <span class="math inline">\(t\)</span>-test, and then to the general analysis of variance (ANOVA) approaches. All of these methods evaluate the equality of mean values.</p>
+<p>In this module, we will examine how to tell the difference between measures of central tendency. This is applied to a single set of data, pairs of data sets, and a data set with many different groups. As we increase the complexity of these hypotheses, we will move through a series of statistical tests, starting with a one-sample <span class="math inline">\(t\)</span>-test, then two-sample (and paired) <span class="math inline">\(t\)</span>-tests, and then to the general analysis of variance (ANOVA) approaches, including models with two factors. All of these methods evaluate the equality of mean values.</p>
 <section id="one-sample-hypotheses" class="level2 theory application">
 <h2 class="theory application anchored" data-anchor-id="one-sample-hypotheses">One Sample Hypotheses</h2>
-<p>At the most basic level, we can take a set of data and test to see if the mean of those values is equated to some particular value, <span class="math inline">\(H_O: \mu = x\)</span> (or <span class="math inline">\(H_O: \mu = 0\)</span> in some cases). The idea here is to determine, by specifying a value for the null hypothesis, what we expect the mean value to be equal to. Going back to our idea of hypothesis testing, the null hypothesis is the thing we are trying to disprove (with some level of statistical confidence) and in doing so we need to define <mark>a test statistic that we have an idea about its behavior</mark>. In this case, we will define Student’s <span class="math inline">\(t\)</span>-test statistic as:</p>
+<p>At the most basic level, we can take a set of data and test to see if the mean of those values is equated to some particular value, <span class="math inline">\(H_O: \mu = x\)</span> (or <span class="math inline">\(H_O: \mu = 0\)</span> in some cases). The idea here is to determine, by specifying a value for the null hypothesis, what we expect the mean value to be equal to. Going back to our idea of hypothesis testing, the null hypothesis is the thing we are trying to disprove (with some level of statistical confidence) and in doing so we need to define a test statistic whose behavior we understand. In this case, we will define Student’s <span class="math inline">\(t\)</span>-test statistic as:</p>
 <p><span class="math inline">\(t =\frac{\bar{x}-\mu}{s_{\bar{x}}}\)</span></p>
-<p>where <span class="math inline">\(\bar{x}\)</span> is the observed mean of the data, <span class="math inline">\(\mu\)</span> is the mean value specified under the null hypothesis, and <span class="math inline">\(s_{\bar{x}}\)</span> is the standard deviation of the data. The value of the <span class="math inline">\(t\)</span>-statistic can be defined based upon the sample size (e.g., the degrees of freedom, <span class="math inline">\(df\)</span>). Here is what the probability density function looks like for <span class="math inline">\(df = (1,3,\infty)\)</span>.</p>
+<p>where <span class="math inline">\(\bar{x}\)</span> is the observed mean of the data, <span class="math inline">\(\mu\)</span> is the mean value specified under the null hypothesis, and <span class="math inline">\(s_{\bar{x}}\)</span> is the standard error of the mean (the standard deviation of the data divided by the square root of the sample size, <span class="math inline">\(s_{\bar{x}} = \frac{s}{\sqrt{N}}\)</span>). The value of the <span class="math inline">\(t\)</span>-statistic can be defined based upon the sample size (e.g., the degrees of freedom, <span class="math inline">\(df\)</span>). Here is what the probability density function looks like for <span class="math inline">\(df = (1,3,\infty)\)</span>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>( ggplot2 )</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">5</span>,<span class="dv">5</span>,<span class="at">by=</span><span class="fl">0.02</span>)</span>
@@ -163,18 +163,16 @@ window.Quarto = {
 <p>For <span class="math inline">\(df &lt; \infty\)</span> (all the cases we will be dealing with), we will use the approximation defined by the <span class="math inline">\(t\)</span> distribution. If you look at the distributions above, you see that as we increase the number of samples (e.g., as <span class="math inline">\(df\)</span> increases), the distribution becomes more restricted. The actual function is defined (where <span class="math inline">\(df = v\)</span> for simplicity in nomenclature) as:</p>
 <p><span class="math inline">\(P(t|x,v)= \frac{ \Gamma\left( \frac{v+1}{2}\right)}{\sqrt{v\pi}\Gamma\left( \frac{v}{2}\right)} \left( 1 + \frac{x^2}{v}\right)^{-\frac{v+1}{2}}\)</span></p>
 <p>where <span class="math inline">\(\Gamma\)</span> is the Gamma function. Not pretty! Fortunately, we have some built-in facilities in R that can make it easy for us.</p>
-<p>For a single set of data, we can use the function above to estimate a value of the <span class="math inline">\(t\)</span> statistic. The probability distribution, defined by the degrees of freedom, identifies regions within which we may suspect the statistic to be abnormally large. In our case, though it is quite arbitrary, we can define either one or two regions of the distribution whose values would be extreme enough such that we would consider a significant deviation. For a two-tailed test, the distribution below illustrates this concept. If the estimated value of the <span class="math inline">\(t\)</span> statistic is in either of the shaded regions, we would reject the null hypothesis of <span class="math inline">\(H_O: \mu = 0\)</span> where <span class="math inline">\(\alpha=0.05\)</span>.</p>
+<p>For a single set of data, we can use the function above to estimate a value of the <span class="math inline">\(t\)</span> statistic. The probability distribution, defined by the degrees of freedom, identifies regions within which we may suspect the statistic to be abnormally large. In our case, though it is quite arbitrary, we can define either one or two regions of the distribution whose values would be extreme enough such that we would consider a significant deviation. For a two-tailed test, the distribution below illustrates this concept. If the estimated value of the <span class="math inline">\(t\)</span> statistic is in either of the shaded regions, we would reject the null hypothesis of <span class="math inline">\(H_O: \mu = 0\)</span> where <span class="math inline">\(\alpha=0.05\)</span>. This example uses <span class="math inline">\(df = 24\)</span>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>d1 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">t=</span><span class="fu">c</span>( <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">5</span>,<span class="sc">-</span><span class="fl">2.064</span>, <span class="at">by=</span><span class="fl">0.02</span>), <span class="sc">-</span><span class="fl">2.064</span>, <span class="sc">-</span><span class="dv">5</span>), </span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">f=</span><span class="fu">c</span>( <span class="fu">dt</span>( <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">5</span>,<span class="sc">-</span><span class="fl">2.064</span>, <span class="at">by=</span><span class="fl">0.02</span>),<span class="at">df=</span><span class="dv">1</span>), <span class="fl">0.01224269</span>, <span class="fl">0.01224269</span>))</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>d2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">t=</span><span class="fu">c</span>( <span class="fu">seq</span>(<span class="fl">2.064</span>,<span class="dv">5</span>,<span class="at">by=</span><span class="fl">0.02</span>), <span class="dv">5</span>, <span class="fl">2.064</span>),</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">f=</span><span class="fu">c</span>( <span class="fu">dt</span>( <span class="fu">seq</span>( <span class="fl">2.064</span>, <span class="dv">5</span>, <span class="at">by=</span><span class="fl">0.02</span>),<span class="at">df=</span><span class="dv">1</span>), <span class="fl">0.01224269</span>, <span class="fl">0.01224269</span>))</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>d3 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>( <span class="at">x=</span><span class="fu">c</span>(<span class="fl">2.5</span>,<span class="sc">-</span><span class="fl">2.5</span>), <span class="at">y=</span><span class="fl">0.02719</span>, <span class="at">label=</span><span class="st">"2.5%"</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_polygon</span>(<span class="fu">aes</span>(t,f),<span class="at">data=</span>d1, <span class="at">fill=</span><span class="st">"#F8766D"</span>,<span class="at">alpha=</span><span class="fl">0.5</span>,<span class="at">color=</span><span class="st">"#F8766D"</span>) <span class="sc">+</span> </span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_polygon</span>(<span class="fu">aes</span>(t,f),<span class="at">data=</span>d2, <span class="at">fill=</span><span class="st">"#F8766D"</span>,<span class="at">alpha=</span><span class="fl">0.5</span>,<span class="at">color=</span><span class="st">"#F8766D"</span>) <span class="sc">+</span> </span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>( <span class="fu">aes</span>(t,f),<span class="at">data=</span>d[d<span class="sc">$</span>df<span class="sc">==</span><span class="dv">1</span>,], <span class="at">color=</span><span class="st">"#F8766D"</span>) <span class="sc">+</span> </span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>( <span class="fu">aes</span>(x,y,<span class="at">label=</span>label),<span class="at">data=</span>d3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nu <span class="ot">&lt;-</span> <span class="dv">24</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>t_crit <span class="ot">&lt;-</span> <span class="fu">qt</span>( <span class="fl">0.975</span>, <span class="at">df =</span> nu )</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>d.t <span class="ot">&lt;-</span> <span class="fu">data.frame</span>( <span class="at">t =</span> x, <span class="at">f =</span> <span class="fu">dt</span>( x, <span class="at">df =</span> nu ) )</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>( d.t, <span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> f) ) <span class="sc">+</span> </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>( <span class="at">data =</span> d.t[ d.t<span class="sc">$</span>t <span class="sc">&lt;=</span> <span class="sc">-</span>t_crit, ], <span class="at">fill =</span> <span class="st">"#F8766D"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span> ) <span class="sc">+</span> </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>( <span class="at">data =</span> d.t[ d.t<span class="sc">$</span>t <span class="sc">&gt;=</span>  t_crit, ], <span class="at">fill =</span> <span class="st">"#F8766D"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span> ) <span class="sc">+</span> </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>( <span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>), <span class="at">y =</span> <span class="fl">0.05</span>, <span class="at">label =</span> <span class="st">"2.5%"</span> )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -183,6 +181,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
+<p>For <span class="math inline">\(df = 24\)</span>, the critical values are <span class="math inline">\(t = \pm\)</span> 2.064. With fewer degrees of freedom the tails are heavier and the critical values move farther from zero (for <span class="math inline">\(df = 1\)</span> they are <span class="math inline">\(\pm\)</span> 12.7).</p>
 <p>In R, we can use the <code>t.test()</code> function. I’m going to go back to the <em>Iris</em> data set and use that as it has three categories (the species) and many measurements on sepals and petals. Here I separate the species into their own <code>data.frame</code> objects.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df.se <span class="ot">&lt;-</span> iris[ iris<span class="sc">$</span>Species <span class="sc">==</span> <span class="st">"setosa"</span>,] </span>
@@ -255,7 +254,7 @@ mean of x
 </div>
 <p>In all the output, we are also given an estimate of the Confidence Interval around the mean. This confidence interval is determined as:</p>
 <p><span class="math inline">\(\bar{x} - t_{\alpha, df} s_{\bar{x}} &lt; \mu &lt; \bar{x} + t_{\alpha, df} s_{\bar{x}}\)</span></p>
-<p>or the mean plus or minus standard deviation of the data times the value of the <span class="math inline">\(t\)</span>-statistic for a given level of <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(df\)</span>.</p>
+<p>or the mean plus or minus the standard error of the mean times the critical value of the <span class="math inline">\(t\)</span> distribution for a given level of <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(df\)</span>.</p>
 <section id="data-variability" class="level3">
 <h3 class="anchored" data-anchor-id="data-variability">Data Variability</h3>
 <p>There are times when reporting some confidence around a parameter is important, particularly when using tabular data as output.</p>
@@ -323,8 +322,8 @@ mean of x
 <p><span class="math inline">\(H_O: \mu_1 - \mu_2 = 0\)</span></p>
 <p>Under this hypothesis, we can use a <em>t</em>-test like before but just rearranged as:</p>
 <p><span class="math inline">\(t = \frac{\bar{x}_1 - \bar{x}_2}{s_{\bar{x}_1-\bar{x}_2}}\)</span></p>
-<p>As before, if the difference in the numerator is small we would reject but here we need to standardize the differences in the means by a measure of the standard deviation that is based upon both sets of data. This is called the <em>standard error of the difference in two means</em> (real catchy title, no?). This is defined as:</p>
-<p><mark><span class="math inline">\(s_{\bar{x}_1-\bar{x}_2} = \sqrt{ \frac{s_1^2}{N_1}+\frac{s_2^2}{N}}\)</span></mark></p>
+<p>As before, if the difference in the numerator is large relative to its standard error we would reject, but here we need to standardize the differences in the means by a measure of the standard deviation that is based upon both sets of data. This is called the <em>standard error of the difference in two means</em> (real catchy title, no?). This is defined as:</p>
+<p><span class="math inline">\(s_{\bar{x}_1-\bar{x}_2} = \sqrt{ \frac{s_1^2}{N_1}+\frac{s_2^2}{N_2}}\)</span></p>
 <p>To test this, we use the same approach as before but instead of defining <span class="math inline">\(\mu = 6.0\)</span> in the <code>t.test()</code> function, we instead give it both data sets.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>( <span class="at">x=</span>df.vi<span class="sc">$</span>Sepal.Length, <span class="at">y =</span> df.ve<span class="sc">$</span>Sepal.Length )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -343,20 +342,65 @@ mean of x mean of y
 </div>
 </div>
 <p>Here we get a few bits of new information from the analysis. It is obvious that we would reject the null hypothesis given the magnitude of the estimated <span class="math inline">\(P\)</span>-value. The output also provides us an estimate of the mean values for each group as well as the confidence around the difference in the mean values. This confidence interval does not overlap 0.0, as it shouldn’t if we reject <span class="math inline">\(H_O: \mu_X = \mu_Y\)</span>.</p>
+<p>By default, <code>t.test()</code> performs <em>Welch’s</em> <span class="math inline">\(t\)</span>-test, which uses the standard error above and does not assume the two groups have the same variance (that is why the degrees of freedom in the output are not a whole number). If you have reason to believe the variances are equal, <code>var.equal = TRUE</code> gives the classic pooled-variance version.</p>
+<section id="paired-samples" class="level3">
+<h3 class="anchored" data-anchor-id="paired-samples">Paired Samples</h3>
+<p>The test above treats the two samples as independent; any observation in one group has nothing to do with any particular observation in the other. Sometimes, though, the data come in natural pairs: the same individual measured before and after a treatment, the left and right wing of the same bird, or upstream and downstream samples from the same stream. For paired data, the question is whether the <em>differences</em> within each pair are, on average, zero:</p>
+<p><span class="math inline">\(H_O: \mu_{x - y} = 0\)</span></p>
+<p>which is just a one-sample <span class="math inline">\(t\)</span>-test on the differences. The built-in <code>sleep</code> data set records the extra hours of sleep for the same 10 patients under each of two drugs, so each patient forms a pair.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>drug1 <span class="ot">&lt;-</span> sleep<span class="sc">$</span>extra[ sleep<span class="sc">$</span>group <span class="sc">==</span> <span class="dv">1</span> ]</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>drug2 <span class="ot">&lt;-</span> sleep<span class="sc">$</span>extra[ sleep<span class="sc">$</span>group <span class="sc">==</span> <span class="dv">2</span> ]</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>fit.paired <span class="ot">&lt;-</span> <span class="fu">t.test</span>( drug1, drug2, <span class="at">paired =</span> <span class="cn">TRUE</span> )</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>fit.paired</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Paired t-test
+
+data:  drug1 and drug2
+t = -4.0621, df = 9, p-value = 0.002833
+alternative hypothesis: true mean difference is not equal to 0
+95 percent confidence interval:
+ -2.4598858 -0.7001142
+sample estimates:
+mean difference 
+          -1.58 </code></pre>
+</div>
+</div>
+<p>If we (incorrectly) ignore the pairing and treat these as independent samples, we get a very different answer.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>fit.unpaired <span class="ot">&lt;-</span> <span class="fu">t.test</span>( drug1, drug2 )</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>fit.unpaired</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Welch Two Sample t-test
+
+data:  drug1 and drug2
+t = -1.8608, df = 17.776, p-value = 0.07939
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -3.3654832  0.2054832
+sample estimates:
+mean of x mean of y 
+     0.75      2.33 </code></pre>
+</div>
+</div>
+<p>The paired test rejects the null hypothesis (<span class="math inline">\(P =\)</span> 0.0028) whereas the unpaired test does not (<span class="math inline">\(P =\)</span> 0.079). Patients differ a lot in how much they sleep, and the unpaired test lumps that among-patient variation in with the drug effect. Pairing removes it. The pairing has to come from how the data were collected, though; you cannot pair observations after the fact just because it gives a smaller <span class="math inline">\(P\)</span>-value.</p>
+</section>
 </section>
 <section id="many-sample-hypotheses" class="level2 theory application">
 <h2 class="theory application anchored" data-anchor-id="many-sample-hypotheses">Many Sample Hypotheses</h2>
-<p>If we have more than two samples, we could do a bunch of paired <span class="math inline">\(t\)</span>-test statistics but this is not the best idea. In fact, if we do this to our data, each time testing at a confidence level of, say, <span class="math inline">\(\alpha = 0.05\)</span>, then for each time we test at <span class="math inline">\(0.05\)</span> but over all pairs, we test at an overall level of <span class="math inline">\(0.05^k\)</span> (where <span class="math inline">\(k\)</span> is the number of tests). We cannot do multiple tests without penalizing ourselves in terms of the level at which we consider something significant if we are going to do all these tests. You may have heard about a Bonferroni correction—this does exactly that, it allows us to modify the <span class="math inline">\(\alpha\)</span> level we use to take into consideration the number of tests we are going to use. While this may be an acceptable way to test for the equality of several means (and it may not actually be if you ask most statisticians), there is another way that is much easier.</p>
+<p>If we have more than two samples, we could do a bunch of pairwise <span class="math inline">\(t\)</span>-tests but this is not the best idea. In fact, if we do this to our data, each time testing at, say, <span class="math inline">\(\alpha = 0.05\)</span>, then each individual test has a 5% chance of a false positive, but the chance of at least one false positive across all <span class="math inline">\(k\)</span> tests is <span class="math inline">\(1-(1-0.05)^k\)</span> (about 14% for the three pairs of <em>Iris</em> species). Rejecting a null hypothesis that is actually true is called a <em>Type I error</em> (a false positive), and for any single test it happens with probability <span class="math inline">\(\alpha\)</span>. Failing to reject a null hypothesis that is actually false is a <em>Type II error</em> (a false negative). We cannot do multiple tests without penalizing ourselves in terms of the level at which we consider something significant if we are going to do all these tests. You may have heard about a Bonferroni correction—this does exactly that, it allows us to modify the <span class="math inline">\(\alpha\)</span> level we use to take into consideration the number of tests we are going to use. While this may be an acceptable way to test for the equality of several means (and it may not actually be if you ask most statisticians), there is another way that is much easier.</p>
 <p>Consider the case where we have many categories (e.g., factors in R) that we are interested in determining if the mean of all are equal. The null hypothesis for this is, <span class="math inline">\(H_O: \mu_1 = \mu_2 = \ldots = \mu_k\)</span>, where there are <span class="math inline">\(k\)</span> different treatment levels. This is essentially what we’d want to do by doing a bunch of <span class="math inline">\(t\)</span>-tests but we can use another approach that we don’t have to penalize ourselves for multiple tests. Here is how it works.</p>
 <p>In the <em>Iris</em> data, we can visualize the means and variation around them by using box plots. Here is an example.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>( iris, <span class="fu">aes</span>(<span class="at">x=</span>Species, <span class="at">y=</span>Sepal.Length)) <span class="sc">+</span> </span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">notch =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> </span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Sepal Length"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>( iris, <span class="fu">aes</span>(<span class="at">x=</span>Species, <span class="at">y=</span>Sepal.Length)) <span class="sc">+</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">notch =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Sepal Length"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="narrative_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="narrative_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -400,7 +444,7 @@ mean of x mean of y
 <tr class="even">
 <td>Within</td>
 <td><span class="math inline">\(N-K\)</span></td>
-<td><span class="math inline">\(\sum_{i=1}^Kn_i\left( \sum_{j=1}^{N_i}(x_{ij}-\bar{x}_i)^2 \right)\)</span></td>
+<td><span class="math inline">\(\sum_{i=1}^K \left( \sum_{j=1}^{N_i}(x_{ij}-\bar{x}_i)^2 \right)\)</span></td>
 <td><span class="math inline">\(\frac{SS_W}{N-K}\)</span></td>
 </tr>
 <tr class="odd">
@@ -413,13 +457,13 @@ mean of x mean of y
 </table>
 <p>In R, we can evaluate the equality of means by partitioning our data as depicted above. Essentially, if at least one of our treatment means deviates significantly, then the <span class="math inline">\(MS_A\)</span> will be abnormally large relative to the variation within each treatment <span class="math inline">\(MS_W\)</span>. This gives us a statistic, defined by the American statistician Snedecor as:</p>
 <p><span class="math inline">\(F = \frac{MS_A}{MS_W}\)</span></p>
-<p><mark>as an homage to Ronald Fisher (the F-statistic) has a pretty well understood distribution under a few conditions.</mark> This statistic has an expectation of:</p>
+<p>Snedecor named it <span class="math inline">\(F\)</span> as an homage to Ronald Fisher. The <span class="math inline">\(F\)</span>-statistic has a well-understood distribution when a few conditions hold: the observations are independent, and the residuals are normally distributed with equal variance in each treatment. Under the null hypothesis, <span class="math inline">\(F\)</span> follows the <span class="math inline">\(F\)</span> distribution, whose density is:</p>
 <p><span class="math inline">\(f(x | df_A, df_W) = \frac{\sqrt{\frac{(df_Ax)^{df_A}df_W^{df_W}}{(df_Ax + df_W)^{df_W+df_A}}}}{x\mathbf{B}\left( \frac{df_A}{2}, \frac{df_W}{2} \right)}\)</span></p>
 <p>which is even more of a mess than that for the <span class="math inline">\(t\)</span>-test! Luckily, we have a bit of code to do this for us.</p>
 <p>Here is an example using the <em>Iris</em> data. Here we test the hypothesis that the Sepal Lengths are all the same (e.g., <span class="math inline">\(H_O: \mu_{se} = \mu_{ve} = \mu_{vi}\)</span>)</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>fit.aov <span class="ot">&lt;-</span> <span class="fu">aov</span>( Sepal.Length <span class="sc">~</span> Species, <span class="at">data=</span>iris)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>fit.aov</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>fit.aov <span class="ot">&lt;-</span> <span class="fu">aov</span>( Sepal.Length <span class="sc">~</span> Species, <span class="at">data=</span>iris)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>fit.aov</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
    aov(formula = Sepal.Length ~ Species, data = iris)
@@ -435,7 +479,7 @@ Estimated effects may be unbalanced</code></pre>
 </div>
 <p>The function called here, <code>aov()</code> is the one that does the Analysis of Variance. It returns an object that has the necessary data we need. To estimate the ANOVA table as outlined above we ask for it as:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit.aov)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit.aov)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
@@ -447,14 +491,29 @@ Residuals 147 38.956   0.265
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
-<p>which shows that the “Species” treatment groups are significantly different from each other, with an <span class="math inline">\(F\)</span> statistic equal to <span class="math inline">\(F = 119.3\)</span>, which with 2 and 147 degrees of freedom is assigned a probability equal to <span class="math inline">\(2e^{-16}\)</span>, a very small value!</p>
+<p>which shows that the “Species” treatment groups are significantly different from each other, with an <span class="math inline">\(F\)</span> statistic equal to <span class="math inline">\(F = 119.3\)</span>, which with 2 and 147 degrees of freedom is assigned a probability less than <span class="math inline">\(2 \times 10^{-16}\)</span> (which R prints as <code>&lt; 2e-16</code>), a very small value!</p>
+<section id="variance-explained" class="level3">
+<h3 class="anchored" data-anchor-id="variance-explained">Variance Explained</h3>
+<p>Unlike <code>summary()</code> of an <code>lm()</code> model, the ANOVA table does not report an <span class="math inline">\(R^2\)</span> directly, but we can get it from the sums of squares. The fraction of the total variation that is explained by the treatment is</p>
+<p><span class="math inline">\(R^2 = \frac{SS_{Among}}{SS_{Total}}\)</span></p>
+<p>The <code>anova()</code> function returns a table whose <code>Sum Sq</code> column holds the sums of squares for each row (the treatment first, the residuals, i.e.&nbsp;<span class="math inline">\(SS_{Within}\)</span>, last), and since <span class="math inline">\(SS_{Total} = SS_{Among} + SS_{Within}\)</span>, the total is just the sum of that column.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>tab.aov <span class="ot">&lt;-</span> <span class="fu">anova</span>( fit.aov )</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>r2 <span class="ot">&lt;-</span> tab.aov<span class="sc">$</span><span class="st">`</span><span class="at">Sum Sq</span><span class="st">`</span>[<span class="dv">1</span>] <span class="sc">/</span> <span class="fu">sum</span>( tab.aov<span class="sc">$</span><span class="st">`</span><span class="at">Sum Sq</span><span class="st">`</span> )</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>r2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6187057</code></pre>
+</div>
+</div>
+<p>So species identity explains 61.9% of the variation in sepal length.</p>
+</section>
 <section id="post-hoc-tests" class="level3">
 <h3 class="anchored" data-anchor-id="post-hoc-tests">Post-Hoc Tests</h3>
 <p>What this analysis tells us is that <em>at least</em> one of the treatment means is different from the rest. What it does not tell us is which one or which subset. It could be that <em>I. setosa</em> is significantly smaller than both <em>I. versicolor</em> and <em>I. virginica</em>. It could be that <em>I. virginica</em> is significantly larger than the others, which are not different. It could also mean that they are all different. To address this, we can estimate a <em>post hoc</em> test, to evaluate the difference between treatment means within this model itself.</p>
 <p>One of the most common ways to evaluate the equality of treatment mean values is that defined by Tukey. The so-called “Honest Significant Differences” <em>post hoc</em> test is given by</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>tuk <span class="ot">&lt;-</span> <span class="fu">TukeyHSD</span>(fit.aov)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>tuk</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>tuk <span class="ot">&lt;-</span> <span class="fu">TukeyHSD</span>(fit.aov)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>tuk</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  Tukey multiple comparisons of means
     95% family-wise confidence level
@@ -468,19 +527,95 @@ virginica-setosa     1.582 1.3382273 1.8257727     0
 virginica-versicolor 0.652 0.4082273 0.8957727     0</code></pre>
 </div>
 </div>
-<p>which breaks down the pair-wise differences in the mean of each treatment. Here we see the magnitude of the differences in mean values, the lower and upper confidence on the differences, and the probability associated with these differences. In this example, all three comparisons are highly unlikely (e.g., <span class="math inline">\(P\)</span> is very small and in this case essentially zero). As a result, <mark>we can interpret these results as suggesting that each of the three species have significantly different.</mark> If we plot these results, we see which ones are larger and which are smaller.</p>
+<p>which breaks down the pair-wise differences in the mean of each treatment. Here we see the magnitude of the differences in mean values, the lower and upper confidence on the differences, and the probability associated with these differences. In this example, all three comparisons are highly unlikely (e.g., <span class="math inline">\(P\)</span> is very small and in this case essentially zero). As a result, we can interpret these results as suggesting that each of the three species has a significantly different mean sepal length. If we plot these results, we see which ones are larger and which are smaller.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( tuk )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( tuk )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="narrative_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="narrative_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>Which shows the difference between treatment mean between all pairs of treatments. Overall, we see that the <em>Iris</em> species are all significantly different.</p>
 </section>
+</section>
+<section id="two-factor-models" class="level2 theory application">
+<h2 class="theory application anchored" data-anchor-id="two-factor-models">Two-Factor Models</h2>
+<p>There are times when we have more than one treatment category for a response. For example, a growth experiment may have a light treatment (high and low light) as well as a nutrient treatment (fewer than normal, normal, and more than normal nutrients). These are called <em>two-factor</em> analyses of variance, and they let us ask three questions at once:</p>
+<ul>
+<li>Does the first factor influence the response?</li>
+<li>Does the second factor influence the response?</li>
+<li>Is there an <em>interaction</em>, where the effect of one factor depends upon the level of the other?</li>
+</ul>
+<p>The underlying linear model extends the one-factor version by adding a term for each factor and one for their interaction:</p>
+<p><span class="math inline">\(y_{ijk} = \mu + \alpha_i + \beta_j + (\alpha\beta)_{ij} + \epsilon_{ijk}\)</span></p>
+<p>where <span class="math inline">\(\alpha_i\)</span> is the effect of the <span class="math inline">\(i^{th}\)</span> level of the first factor, <span class="math inline">\(\beta_j\)</span> is the effect of the <span class="math inline">\(j^{th}\)</span> level of the second factor, <span class="math inline">\((\alpha\beta)_{ij}\)</span> is the interaction, and <span class="math inline">\(\epsilon_{ijk}\)</span> is the deviation of each observation from its treatment-combination mean. Each of these terms gets its own row (and its own <span class="math inline">\(F\)</span> test) in the ANOVA table.</p>
+<p>The <em>Iris</em> data have only one categorical variable, so here we will use the <em>Motor Trend Cars</em> data (<code>mtcars</code>) and ask whether the quarter-mile time of a car depends upon its engine shape and its transmission type.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>cars <span class="ot">&lt;-</span> <span class="fu">data.frame</span>( <span class="at">Time =</span> mtcars<span class="sc">$</span>qsec,</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Engine =</span> <span class="fu">factor</span>( <span class="fu">ifelse</span>( mtcars<span class="sc">$</span>vs <span class="sc">==</span> <span class="dv">0</span>, <span class="st">"V"</span>, <span class="st">"Straight"</span> ) ),</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Transmission =</span> <span class="fu">factor</span>( <span class="fu">ifelse</span>( mtcars<span class="sc">$</span>am <span class="sc">==</span> <span class="dv">0</span>, <span class="st">"Auto"</span>, <span class="st">"Manual"</span> ) ) )</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>( cars )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      Time            Engine   Transmission
+ Min.   :14.50   Straight:14   Auto  :19   
+ 1st Qu.:16.89   V       :18   Manual:13   
+ Median :17.71                             
+ Mean   :17.85                             
+ 3rd Qu.:18.90                             
+ Max.   :22.90                             </code></pre>
+</div>
+</div>
+<p>In the model formula, <code>Engine * Transmission</code> is shorthand for <code>Engine + Transmission + Engine:Transmission</code>; both factors <strong>and</strong> their interaction.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>fit.both <span class="ot">&lt;-</span> <span class="fu">aov</span>( Time <span class="sc">~</span> Engine <span class="sc">*</span> Transmission, <span class="at">data =</span> cars )</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>( fit.both )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: Time
+                    Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+Engine               1 54.872  54.872 49.1643 1.261e-07 ***
+Transmission         1 12.853  12.853 11.5162  0.002077 ** 
+Engine:Transmission  1  0.012   0.012  0.0104  0.919668    
+Residuals           28 31.251   1.116                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Both engine shape and transmission type have a significant effect on quarter-mile time, but the interaction term does not. The easiest way to see what an interaction would look like is to plot the mean of each treatment combination.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>cell.means <span class="ot">&lt;-</span> <span class="fu">aggregate</span>( Time <span class="sc">~</span> Engine <span class="sc">+</span> Transmission, <span class="at">data =</span> cars, <span class="at">FUN =</span> mean )</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>( cell.means, <span class="fu">aes</span>(<span class="at">x =</span> Transmission, <span class="at">y =</span> Time, <span class="at">color =</span> Engine, <span class="at">group =</span> Engine) ) <span class="sc">+</span> </span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>( <span class="at">size =</span> <span class="dv">3</span> ) <span class="sc">+</span> </span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>( <span class="st">"Quarter-Mile Time (s)"</span> )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="narrative_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The two lines are nearly parallel: straight engines are slower by roughly the same amount whether the transmission is automatic or manual. That is what <em>no interaction</em> looks like. If the lines had different slopes (or crossed), the effect of transmission would depend upon the engine, and the interaction term would be significant.</p>
+<p>The <code>TukeyHSD()</code> function works on two-factor models too; the <code>which</code> argument picks the term whose pairwise differences you want.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">TukeyHSD</span>( fit.both, <span class="at">which =</span> <span class="st">"Engine"</span> )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = Time ~ Engine * Transmission, data = cars)
+
+$Engine
+                diff      lwr       upr p adj
+V-Straight -2.639683 -3.41084 -1.868525 1e-07</code></pre>
+</div>
+</div>
+<p>One caution: these data are not <em>balanced</em> (there are different numbers of cars in each treatment combination). With unbalanced data, <code>anova()</code> adds the terms in the order they appear in the formula, so the sums of squares for a factor can change a little if you list the factors in a different order. With a balanced design, the order does not matter.</p>
 </section>
 
 </main>

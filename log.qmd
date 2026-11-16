@@ -46,3 +46,40 @@ page or the source for `<mark>` to find them. Line numbers below refer to
 | ~144 | $s_{\bar{x}_1-\bar{x}_2} = \sqrt{ \frac{s_1^2}{N_1}+\frac{s_2^2}{N}}$ | The second denominator is $N$, not $N_2$, breaking the parallel with the first term. Likely a typo, but it's a formula, not prose, so I didn't touch it — please confirm and fix if I'm right. |
 | ~206 | "as an homage to Ronald Fisher (the F-statistic) has a pretty well understood distribution under a few conditions." | Sentence doesn't parse — the subject of "has" is unclear. Probably meant something like "The F-statistic, so named as an homage to Ronald Fisher, has a pretty well understood distribution under a few conditions," but there are other ways to fix it, so I left the rewrite to you. |
 | ~238 | "we can interpret these results as suggesting that each of the three species have significantly different." | Incomplete — "different" needs an object (different *what*? "different mean sepal lengths"? "different from one another"?). Needs your intended meaning to complete it. |
+
+### narrative.qmd and slides.qmd — 2026-11-16
+
+Resolved the four flagged items above and corrected content errors found in a review.
+
+| File | Issue | Fix |
+|---|---|---|
+| narrative | Flag: "a test statistic that we have an idea about its behavior" | "a test statistic whose behavior we understand" |
+| narrative | Flag: second denominator $N$ in the SE of a difference | $N_2$ |
+| narrative | Flag: *F*/Fisher sentence did not parse | Rewritten; now also states the ANOVA assumptions |
+| narrative | Flag: "have significantly different." | "has a significantly different mean sepal length." |
+| narrative | $s_{\bar{x}}$ called the standard deviation of the data (also in the CI paragraph) | Standard error of the mean, $s/\sqrt{N}$ |
+| both | Rejection-region plot shaded ±2.064 on the $df = 1$ curve, labelled 2.5% per tail (true area ≈ 14%) | Plot redrawn for $df = 24$ with `qt()`-computed cutoffs |
+| narrative | "if the difference in the numerator is small we would reject" | "large relative to its standard error" |
+| narrative | Familywise error given as $0.05^k$; "paired" used for pairwise | $1-(1-0.05)^k$; "pairwise" |
+| both | Stray $n_i$ in the $SS_{Within}$ cell of the ANOVA table | Removed |
+| narrative | *F* "has an expectation of" (it is the density); "$2e^{-16}$" | "density"; "less than $2 \times 10^{-16}$" |
+| slides | $\epsilon_j$ in $y_{ij} = \mu + \tau_i + \epsilon_j$ | $\epsilon_{ij}$ |
+| slides | Tukey $q$ denominator $\sigma\sqrt{2/N}$ | $\sqrt{MS_W/n}$ |
+| slides | Title "Analysis of Means"; typos (asymeetry, exmained, "more than on", "i'm") | "Analysis of Variance"; fixed |
+| module.yml | Epigraph called two-sample tests "paired" | "two-sample and paired" |
+
+Added to the narrative so it covers what the slides and homework use: a Welch's-test note, a *Paired Samples* subsection (`sleep` data), Type I/II error definitions, and a *Two-Factor Models* section (`mtcars`, interaction, `TukeyHSD(which=)`, unbalanced-design caution).
+
+Replaced the empty `in-class.qmd` with an eight-step `mtcars` activity (MPG ~ cylinders, Tukey, $R^2$, then cylinders × transmission and an interaction plot), plus `_in-class_key.qmd`. Added a *Variance Explained* subsection to the narrative, since the activity needs $R^2$ from the ANOVA table.
+
+### homework.qmd — 2026-11-16
+
+Rebuilt the homework to `HOMEWORK-DESIGN-GUIDE.md` on the Rice Rivers Center data (daily means, Jan–Mar 2014), replacing the diet-data fill-in version. The worked example is dissolved oxygen ~ Month (+ Tukey, $R^2$) and DO ~ Month × Weather (rain vs dry day); the student task is the same pipeline on river depth. Two Analyze questions: familywise error vs. Tukey, and pseudoreplication / independence from the 15-minute readings. `_homework-key.qmd` rewritten as a full-marks submission.
+
+slides.qmd: the $t$ density slide now defines $x$, $v$ and $\Gamma$. The interaction Tukey plot uses short factor levels (`V`/`Straight`, `Auto`/`Manual`) and horizontal labels; the narrative uses the same levels.
+
+slides.qmd: split the single "Rejection Regions" slide into three slides titled by the null hypothesis ($\mu = c$, $\mu \ge c$, $\mu \le c$), each showing the $t$ distribution ($df = 24$) with its rejection region shaded and the computed cutoff in the caption.
+
+### homework.qmd / in-class.qmd — 2026-11-16
+
+Homework header now requires `execute: echo: false` (research-paper style; `code-tools` still shows the source), with an explanation bullet, a callout above the worked example, and a matching callout in `in-class.qmd`. The worked example and the in-class activity keep their code visible.
