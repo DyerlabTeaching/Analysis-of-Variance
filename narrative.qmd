@@ -20,7 +20,9 @@ In this module, we will examine how to tell the difference between measures of c
 
 ## One Sample Hypotheses {.theory .application}
 
-At the most basic level, we can take a set of data and test to see if the mean of those values is equated to some particular value, $H_O: \mu = x$ (or $H_O: \mu = 0$ in some cases).  The idea here is to determine, by specifying a value for the null hypothesis, what we expect the mean value to be equal to.  Going back to our idea of hypothesis testing, the null hypothesis is the thing we are trying to disprove (with some level of statistical confidence) and in doing so we need to define a test statistic whose behavior we understand.  In this case, we will define Student's $t$-test statistic as:
+At the most basic level, we can take a set of data and test to see if the mean of those values is equated to some particular value, $H_O: \mu = x$ (or $H_O: \mu = 0$ in some cases).  The idea here is to determine, by specifying a value for the null hypothesis, what we expect the mean value to be equal to.  Going back to our idea of hypothesis testing, the null hypothesis is the thing we are trying to disprove (with some level of statistical confidence).  To do so, we need to define a test statistic whose behavior we can either understand because it conforms to an existing distribuional form or we need to be able to specify a distribution of values that would be expected if the null hypothesis is correct (as we did in the correlation section).  
+
+In this case, we will define Student's $t$-test statistic as:
 
 $t =\frac{\bar{x}-\mu}{s_{\bar{x}}}$
 
@@ -141,11 +143,14 @@ $H_O: \mu_1 - \mu_2 = 0$
 
 Under this hypothesis, we can use a *t*-test like before but just rearranged as:
 
-$t = \frac{\bar{x}_1 - \bar{x}_2}{s_{\bar{x}_1-\bar{x}_2}}$
-
+$$
+t = \frac{\bar{x}_1 - \bar{x}_2}{s_{\bar{x}_1-\bar{x}_2}}
+$$
 As before, if the difference in the numerator is large relative to its standard error we would reject, but here we need to standardize the differences in the means by a measure of the standard deviation that is based upon both sets of data.  This is called the *standard error of the difference in two means* (real catchy title, no?).  This is defined as:
 
-$s_{\bar{x}_1-\bar{x}_2} = \sqrt{ \frac{s_1^2}{N_1}+\frac{s_2^2}{N_2}}$
+$$
+s_{\bar{x}_1-\bar{x}_2} = \sqrt{ \frac{s_1^2}{N_1}+\frac{s_2^2}{N_2}}
+$$
 
 To test this, we use the same approach as before but instead of defining $\mu = 6.0$ in the `t.test()` function, we instead give it both data sets.
 
@@ -197,7 +202,9 @@ ggplot( iris, aes(x=Species, y=Sepal.Length)) +
 
 For us to tell if there are statistical differences among the species, we need to look at both the location of the mean values as well as the variation around them.  We do this by partitioning the variation in all the data into the components within each treatment (species) and among each treatment (species) using an approach derived from the sum of squared deviations (or Sums of Squares).  Formally, we can estimate the sum of squares within each of the $K$ groupings as:
 
-$SS_{Within} = \sum_{i=1}^K\left( \sum_{j=1}^{N_i}(x_{ij}-\bar{x}_i)^2 \right)$
+$$
+SS_{Within} = \sum_{i=1}^K\left( \sum_{j=1}^{N_i}(x_{ij}-\bar{x}_i)^2 \right)
+$$
 
 whose degrees of freedom are defined as:
 
@@ -233,9 +240,17 @@ In R, we can evaluate the equality of means by partitioning our data as depicted
 
 $F = \frac{MS_A}{MS_W}$
 
-Snedecor named it $F$ as an homage to Ronald Fisher.  The $F$-statistic has a well-understood distribution when a few conditions hold: the observations are independent, and the residuals are normally distributed with equal variance in each treatment.  Under the null hypothesis, $F$ follows the $F$ distribution, whose density is:
+It has been said that Snedecor named the parameter $F$ as an homage to Ronald Fisher.  
 
-$f(x | df_A, df_W) = \frac{\sqrt{\frac{(df_Ax)^{df_A}df_W^{df_W}}{(df_Ax + df_W)^{df_W+df_A}}}}{x\mathbf{B}\left( \frac{df_A}{2}, \frac{df_W}{2} \right)}$
+The $F$-statistic has a well-understood distribution when a few conditions hold: 
+  - the observations are independent, and 
+  - the residuals are normally distributed with equal variance in each treatment.  
+  
+Under the null hypothesis, $F$ follows the $F$ distribution, whose density is:
+
+$$
+f(x | df_A, df_W) = \frac{\sqrt{\frac{(df_Ax)^{df_A}df_W^{df_W}}{(df_Ax + df_W)^{df_W+df_A}}}}{x\mathbf{B}\left( \frac{df_A}{2}, \frac{df_W}{2} \right)}
+$$
 
 which is even more of a mess than that for the $t$-test!  Luckily, we have a bit of code to do this for us.
 
@@ -281,7 +296,9 @@ tuk <- TukeyHSD(fit.aov)
 tuk
 ```
 
-which breaks down the pair-wise differences in the mean of each treatment.  Here we see the magnitude of the differences in mean values, the lower and upper confidence on the differences, and the probability associated with these differences.  In this example, all three comparisons are highly unlikely (e.g., $P$ is very small and in this case essentially zero).  As a result, we can interpret these results as suggesting that each of the three species has a significantly different mean sepal length.  If we plot these results, we see which ones are larger and which are smaller. 
+which breaks down the pair-wise differences in the mean of each treatment.  Here we see the magnitude of the differences in mean values, the lower and upper confidence on the differences, and the probability associated with these differences.  In this example, all three comparisons are highly unlikely (e.g., $P$ is very small and in this case essentially zero).  As a result, we can interpret these results as suggesting that each of the three species have a significantly different mean sepal lengths.  
+
+If we plot the Tukey results, we can visualize the differences shown in the tabular output above.  This output has each pairwise comparison as a row (see the labels on the y-axis) and the differences between the mean values of sepal length is shown as a bracket spanning the range indicated on the x-axis.  If this range covers the value of 0, then those two treatment levels are not significantly different (as the confidence of the difference spans 0).  If they do not span across 0, then we can say they are significantly different.  
 
 ```{r}
 plot( tuk )
